@@ -55,14 +55,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 @media(max-width:600px){
   .hdr-sub,.icon-btn .btn-text{display:none}
   .hdr-title{font-size:16px}
+  .hdr{flex-wrap:nowrap}
 }
 
 /* ══ LAYOUT — desktop 3col, mobile tab-switched ══ */
 .layout{display:grid;grid-template-columns:285px 1fr 340px;
-  height:calc(100vh - 64px);overflow:hidden}
+  height:calc(100vh - 72px);overflow:hidden}
 
 @media(max-width:900px){
-  .layout{display:block;height:calc(100vh - 64px - 60px);position:relative;overflow:hidden}
+  .layout{display:block;height:calc(100vh - 72px - 60px);position:relative;overflow:hidden}
   .sidebar,.center,.answer-panel{
     position:absolute;inset:0;overflow-y:auto;
     background:var(--bg);
@@ -911,18 +912,6 @@ body.beginner .adv-only{display:none!important}
   <!-- ═══ ANSWER PANEL ═══ -->
   <aside class="answer-panel">
     <div class="ap-placeholder" id="apPlaceholder">
-      <div class="big-icon">🔍</div>
-      <h3>Click a question or button</h3>
-      <p>Pick any question from the list on the left, or click any button on the Zoom interface above to see a clear, step-by-step explanation here.</p>
-    </div>
-    <div class="ap-content" id="apContent"></div>
-  </aside>
-
-  </main>
-
-  <!-- ═══ ANSWER PANEL ═══ -->
-  <aside class="answer-panel">
-    <div class="ap-placeholder" id="apPlaceholder">
       <div class="big-icon">🤔</div>
       <h3>Pick a question!</h3>
       <p>Choose anything from the list on the left, or tap any button on the Zoom screen above.</p>
@@ -1628,7 +1617,7 @@ function showAnswer(q){
       <div class="ap-q">${q.q}</div>
     </div>
     <div class="ap-text">${q.text}</div>`;
-  if(q.steps?.length){
+  if(q.steps && q.steps.length){
     html+=`<div class="steps"><div class="steps-lbl">📋 Step by Step</div>`;
     q.steps.forEach((s,i)=>{ html+=`<div class="step"><div class="step-n">${i+1}</div><div class="step-t">${s}</div></div>`; });
     html+=`</div>`;
@@ -1639,15 +1628,15 @@ function showAnswer(q){
   }
   if(q.info) html+=`<div class="info-box">ℹ️ ${q.info}</div>`;
   if(q.warn) html+=`<div class="warn-box">⚠️ <strong>Important:</strong> ${q.warn}</div>`;
-  q.tips?.forEach(t=>{ html+=`<div class="tip-box"><div class="tit">💡 Tip</div>${t}</div>`; });
+  if(q.tips){ q.tips.forEach(function(t){ html+='<div class="tip-box"><div class="tit">💡 Tip</div>'+t+'</div>'; }); }
   // Nav
   const visible=FAQ.filter(x=>!isBeginnerMode||x.lvl!=='adv');
   const idx=visible.findIndex(x=>x.id===q.id);
   const prev=idx>0?visible[idx-1]:null;
   const next=idx<visible.length-1?visible[idx+1]:null;
   html+=`<div class="ap-nav">
-    <button class="nav-b" ${!prev?'disabled':''} onclick="selectQ('${prev?.id}')">← Previous</button>
-    <button class="nav-b" ${!next?'disabled':''} onclick="selectQ('${next?.id}')">Next →</button>
+    <button class="nav-b" ${!prev?'disabled':''} onclick="selectQ('"+(prev?prev.id:'')+"')">← Previous</button>
+    <button class="nav-b" ${!next?'disabled':''} onclick="selectQ('"+(next?next.id:'')+"')">Next →</button>
   </div>`;
   ct.innerHTML=html; ct.style.display='flex';
   requestAnimationFrame(()=>ct.classList.add('show'));
