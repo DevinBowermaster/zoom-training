@@ -54,16 +54,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100%;
   display:flex;align-items:center;gap:4px}
 .icon-btn:hover{background:rgba(255,255,255,.28);transform:translateY(-1px)}
 @media(max-width:600px){
-  .hdr-sub,.icon-btn .btn-text{display:none}
+  .hdr-sub,.icon-btn{display:none}
   .hdr-title{font-size:16px}
-  .hdr{flex-wrap:nowrap}
+  .hdr,.hdr-right{flex-wrap:nowrap}
 }
 
 /* ══ LAYOUT — desktop 3col, mobile tab-switched ══ */
 .layout{display:flex;flex-direction:row;flex:1;min-height:0;overflow:hidden}
 
 @media(max-width:900px){
-  .layout{position:relative;overflow:hidden}
+  .layout{display:block;position:relative;overflow:hidden}
   .sidebar,.center,.answer-panel{
     position:absolute;inset:0;overflow-y:auto;
     background:var(--bg);
