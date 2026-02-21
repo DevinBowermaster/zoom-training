@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoom Help Guide — AA Meeting Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#2D8CFF;--purple:#7C3AED;--pink:#EC4899;--orange:#F97316;
+  --green:#10B981;--yellow:#F59E0B;--danger:#EF4444;
+  --bg:#F5F0FF;--white:#fff;--border:#E5E7EB;--text:#1a1a2e;--muted:#6b7280;
+  --font:'Nunito',sans-serif;--shadow:0 4px 20px rgba(0,0,0,0.12);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:16px}
+
+/* ══ DANCER ══ */
+.dancer-wrap{position:relative;width:52px;height:52px;flex-shrink:0;cursor:pointer;user-select:none}
+.dancer{font-size:34px;position:absolute;bottom:0;left:50%;transform-origin:bottom center;
+  animation:twerk .45s ease-in-out infinite alternate}
+@keyframes twerk{
+  0%  {transform:translateX(-50%) rotate(-14deg) translateY(0)   scaleY(1)}
+  33% {transform:translateX(-50%) rotate(9deg)   translateY(-4px) scaleY(.93)}
+  66% {transform:translateX(-50%) rotate(-9deg)  translateY(-7px) scaleY(1.07)}
+  100%{transform:translateX(-50%) rotate(15deg)  translateY(-1px) scaleY(.96)}
+}
+.dancer-wrap:hover .dancer{animation-duration:.2s}
+.dstar{position:absolute;font-size:11px;animation:starPop 1.1s ease-in-out infinite;opacity:0}
+.dstar:nth-child(1){top:-2px;left:2px;animation-delay:0s}
+.dstar:nth-child(2){top:-6px;left:50%;transform:translateX(-50%);animation-delay:.37s}
+.dstar:nth-child(3){top:-2px;right:2px;animation-delay:.74s}
+@keyframes starPop{0%,100%{opacity:0;transform:translateY(0) scale(.4)}50%{opacity:1;transform:translateY(-7px) scale(1)}}
+
+/* ══ HEADER ══ */
+.hdr{background:linear-gradient(135deg,#4C1D95,#7C3AED 50%,#EC4899);color:#fff;
+  padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;flex-wrap:wrap;box-shadow:0 4px 24px rgba(124,58,237,.45);
+  position:sticky;top:0;z-index:200}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.hdr-titles{display:flex;flex-direction:column}
+.hdr-title{font-size:19px;font-weight:900;letter-spacing:-.4px;line-height:1.15}
+.hdr-sub{font-size:10px;opacity:.9;font-weight:700;letter-spacing:.3px}
+.hdr-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tog-group{display:flex;background:rgba(255,255,255,.18);border-radius:10px;padding:3px;gap:2px}
+.tog-btn{padding:5px 12px;border:none;border-radius:7px;font-family:var(--font);
+  font-size:13px;font-weight:800;cursor:pointer;background:transparent;
+  color:rgba(255,255,255,.8);transition:all .2s}
+.tog-btn.active{background:#fff;color:var(--purple)}
+.icon-btn{padding:6px 12px;border:2px solid rgba(255,255,255,.4);border-radius:9px;
+  font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;
+  background:rgba(255,255,255,.12);color:#fff;transition:all .2s;
+  display:flex;align-items:center;gap:4px}
+.icon-btn:hover{background:rgba(255,255,255,.28);transform:translateY(-1px)}
+@media(max-width:600px){
+  .hdr-sub,.icon-btn .btn-text{display:none}
+  .hdr-title{font-size:16px}
+}
+
+/* ══ LAYOUT — desktop 3col, mobile tab-switched ══ */
+.layout{display:grid;grid-template-columns:285px 1fr 340px;
+  height:calc(100vh - 64px);overflow:hidden}
+
+@media(max-width:900px){
+  .layout{display:block;height:calc(100vh - 64px - 60px);position:relative;overflow:hidden}
+  .sidebar,.center,.answer-panel{
+    position:absolute;inset:0;overflow-y:auto;
+    background:var(--bg);
+    transform:translateX(105%);
+    transition:transform .32s cubic-bezier(.4,0,.2,1);
+    will-change:transform;
+  }
+  .sidebar{background:#fff}
+  .answer-panel{background:#fff}
+  .layout[data-tab="q"]   .sidebar      {transform:translateX(0)}
+  .layout[data-tab="ui"]  .center       {transform:translateX(0)}
+  .layout[data-tab="ans"] .answer-panel {transform:translateX(0)}
+}
+
+/* ══ MOBILE BOTTOM TAB BAR ══ */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;z-index:300;
+  background:#fff;border-top:2px solid var(--border);
+  box-shadow:0 -4px 18px rgba(0,0,0,.09)}
+.mob-nav-inner{display:flex;height:100%}
+.mob-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;border:none;background:transparent;font-family:var(--font);
+  font-size:9px;font-weight:800;color:var(--muted);cursor:pointer;
+  text-transform:uppercase;letter-spacing:.5px;position:relative;transition:color .2s}
+.mob-tab .mt-icon{font-size:24px;transition:transform .2s}
+.mob-tab.active{color:var(--purple)}
+.mob-tab.active .mt-icon{transform:scale(1.25)}
+.mob-tab::after{content:'';position:absolute;top:0;left:25%;right:25%;height:3px;
+  border-radius:0 0 4px 4px;background:transparent;transition:background .2s}
+.mob-tab.active::after{background:linear-gradient(90deg,var(--purple),var(--pink))}
+.ans-dot{position:absolute;top:7px;right:calc(50% - 16px);width:9px;height:9px;
+  background:var(--pink);border-radius:50%;display:none;border:2px solid #fff;
+  animation:dotpulse .7s infinite alternate}
+.ans-dot.show{display:block}
+@keyframes dotpulse{from{transform:scale(1)}to{transform:scale(1.5)}}
+@media(max-width:900px){.mob-nav{display:block}}
+
+/* ══ SIDEBAR ══ */
+.sidebar{background:#fff;border-right:1px solid var(--border);
+  overflow-y:auto;display:flex;flex-direction:column}
+.sb-search{padding:12px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:#fff;z-index:10}
+.search-wrap{position:relative}
+.search-in{width:100%;padding:10px 12px 10px 36px;border:2.5px solid var(--border);
+  border-radius:12px;font-family:var(--font);font-size:14px;font-weight:600;
+  outline:none;transition:all .2s;background:#FAFAFA}
+.search-in:focus{border-color:var(--purple);background:#fff;
+  box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;
+  transform:translateY(-50%);font-size:14px;pointer-events:none}
+.sb-fun{padding:8px 12px;font-size:11px;font-weight:800;text-align:center;
+  background:linear-gradient(135deg,#EDE9FE,#FDF4FF);color:var(--purple);
+  border-bottom:1px solid #DDD6FE;letter-spacing:.2px}
+.cat-section{border-bottom:1px solid var(--border)}
+.cat-hdr{padding:10px 13px;display:flex;align-items:center;gap:8px;cursor:pointer;
+  user-select:none;background:#FAFAFA;position:sticky;top:59px;z-index:5;transition:background .15s}
+.cat-hdr:hover{background:#F5F0FF}
+.cat-icon{font-size:16px;width:22px;text-align:center}
+.cat-name{font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--muted);flex:1}
+.cat-count{font-size:11px;font-weight:800;background:var(--border);
+  color:var(--muted);padding:2px 7px;border-radius:99px}
+.cat-chev{font-size:10px;color:var(--muted);transition:transform .2s}
+.cat-hdr.open .cat-chev{transform:rotate(180deg)}
+.q-list{display:none;flex-direction:column}
+.q-list.open{display:flex}
+.q-item{padding:9px 13px 9px 24px;cursor:pointer;font-size:13px;font-weight:600;
+  color:#374151;border-left:3px solid transparent;transition:all .15s;line-height:1.4}
+.q-item:hover{background:#F5F0FF;color:var(--purple);border-left-color:var(--purple)}
+.q-item.active{background:#EDE9FE;color:var(--purple);border-left-color:var(--purple);font-weight:800}
+.q-item.hidden{display:none!important}
+.adv-badge{display:inline-block;font-size:9px;font-weight:800;padding:2px 5px;
+  border-radius:4px;margin-left:4px;vertical-align:middle;background:#FEF3C7;color:#92400E}
+/* Category color left-border accents when open */
+.cat-section[data-cat="start"]  .cat-hdr.open{background:#EFF6FF;border-left:3px solid #3B82F6}
+.cat-section[data-cat="av"]     .cat-hdr.open{background:#F0FDF4;border-left:3px solid #10B981}
+.cat-section[data-cat="meeting"].cat-hdr.open{background:#FFF7ED;border-left:3px solid #F97316}
+.cat-section[data-cat="host"]   .cat-hdr.open{background:#FEF9C3;border-left:3px solid #F59E0B}
+.cat-section[data-cat="share"]  .cat-hdr.open{background:#EDE9FE;border-left:3px solid #7C3AED}
+.cat-section[data-cat="record"] .cat-hdr.open{background:#FFE4E6;border-left:3px solid #F43F5E}
+.cat-section[data-cat="trouble"].cat-hdr.open{background:#F0F9FF;border-left:3px solid #0EA5E9}
+.cat-section[data-cat="tech"]   .cat-hdr.open{background:#FFF1F2;border-left:3px solid #EF4444}
+.cat-section[data-cat="concerns"].cat-hdr.open{background:#F5F0FF;border-left:3px solid #8B5CF6}
+
+/* ══ CENTER ══ */
+.center{background:var(--bg);display:flex;flex-direction:column;
+  align-items:center;padding:14px;overflow-y:auto;gap:12px}
+.welcome-bar{background:linear-gradient(135deg,#EDE9FE,#FDF4FF);
+  border:2px solid #C4B5FD;border-radius:14px;padding:13px 16px;
+  display:flex;align-items:center;gap:12px;width:100%;max-width:700px;
+  box-shadow:0 2px 14px rgba(124,58,237,.12)}
+.wb-icon{font-size:30px;animation:wobble 2.2s ease-in-out infinite;display:block}
+@keyframes wobble{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+.wb-text strong{display:block;font-size:14px;font-weight:900;color:#4C1D95;margin-bottom:3px}
+.wb-text{font-size:13px;font-weight:700;color:#5B21B6;line-height:1.55}
+.ui-tabs{display:flex;gap:5px;background:#fff;padding:4px;border-radius:12px;
+  box-shadow:var(--shadow)}
+.ui-tab{padding:8px 18px;border:none;border-radius:9px;font-family:var(--font);
+  font-size:13px;font-weight:800;cursor:pointer;background:transparent;
+  color:var(--muted);transition:all .25s}
+.ui-tab.active{background:linear-gradient(135deg,var(--purple),var(--pink));
+  color:#fff;box-shadow:0 3px 14px rgba(124,58,237,.38)}
+.ui-tab:hover:not(.active){background:#F5F0FF;color:var(--purple)}
+
+/* ══ DESKTOP ZOOM MOCKUP ══ */
+.zoom-desktop{width:100%;max-width:700px;background:#1F1F1F;border-radius:14px;
+  overflow:visible;box-shadow:0 20px 60px rgba(0,0,0,.55),
+  0 0 0 1px rgba(255,255,255,.05);position:relative}
+.zoom-titlebar{background:#2D2D2D;border-radius:14px 14px 0 0;padding:7px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #3a3a3a}
+.wcs{display:flex;gap:5px}
+.wc{width:11px;height:11px;border-radius:50%}
+.wc.r{background:#FF5F57}.wc.y{background:#FEBC2E}.wc.g{background:#28C840}
+.ztitle-area{display:flex;flex-direction:column;align-items:center;gap:1px}
+.ztitle{color:#ddd;font-size:12px;font-weight:700}
+.ztimer{color:#888;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.z-top-right{display:flex;align-items:center;gap:8px}
+.z-top-icon{background:rgba(255,255,255,.1);border:none;border-radius:5px;color:#ccc;
+  font-size:12px;padding:3px 8px;cursor:pointer;font-family:var(--font);transition:all .2s}
+.z-top-icon:hover,.z-top-icon.highlighted{background:var(--purple);color:#fff;
+  animation:pulse 1.5s infinite}
+.z-video-area{background:#2a2a2a;display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2px;padding:2px;position:relative;min-height:200px}
+@media(max-width:500px){.z-video-area{grid-template-columns:repeat(2,1fr);min-height:150px}}
+.vtile{background:#1a1a1a;border-radius:4px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;min-height:66px;position:relative;
+  overflow:hidden;cursor:pointer;transition:all .2s}
+.vtile:hover{box-shadow:inset 0 0 0 2px rgba(124,58,237,.6)}
+.vtile.speaking{box-shadow:inset 0 0 0 2px var(--green)}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:14px;font-weight:900;color:#fff}
+.ntag{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.7);color:#fff;
+  font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;white-space:nowrap}
+.mic-ind{position:absolute;bottom:4px;right:4px;font-size:10px}
+.view-btn{position:absolute;top:7px;right:7px;background:rgba(0,0,0,.6);border:none;
+  border-radius:5px;color:#fff;font-size:10px;padding:3px 8px;cursor:pointer;
+  font-weight:700;font-family:var(--font);border:1px solid rgba(255,255,255,.15);
+  transition:all .2s;z-index:5}
+.view-btn:hover,.view-btn.highlighted{background:var(--purple);border-color:var(--purple);
+  animation:pulse 1.5s infinite}
+
+/* Participants Panel */
+.z-pp{position:absolute;right:0;top:0;width:190px;background:#222;
+  border-left:1px solid #3a3a3a;padding:10px;display:none;flex-direction:column;
+  gap:6px;z-index:10;overflow-y:auto;max-height:400px}
+.z-pp.show{display:flex}
+.pp-title{color:#ddd;font-size:11px;font-weight:800;padding-bottom:7px;
+  border-bottom:1px solid #3a3a3a}
+.pr{display:flex;align-items:center;gap:6px;padding:3px 0}
+.pr-av{width:25px;height:25px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:9px;font-weight:900;color:#fff;flex-shrink:0}
+.pr-name{flex:1;color:#ccc;font-size:10px;font-weight:600;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.pr-actions{display:flex;gap:2px;flex-shrink:0}
+.pbt{background:rgba(255,255,255,.1);border:none;border-radius:3px;color:#ccc;
+  font-size:8px;padding:2px 5px;cursor:pointer;font-weight:800;
+  font-family:var(--font);transition:all .2s;white-space:nowrap}
+.pbt:hover,.pbt.highlighted{background:var(--purple);color:#fff;animation:pulse 1.5s infinite}
+.pbt.danger-bt:hover{background:var(--danger);color:#fff}
+.mute-all-btn{width:100%;margin-top:5px;padding:6px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);border-radius:5px;color:#bbb;font-size:10px;
+  font-weight:800;font-family:var(--font);cursor:pointer;transition:all .2s}
+.mute-all-btn:hover,.mute-all-btn.highlighted{background:var(--purple);color:#fff}
+.wr-badge{background:var(--yellow);color:#fff;font-size:9px;font-weight:800;
+  padding:1px 5px;border-radius:3px;margin-left:3px}
+
+/* More dropdown */
+.more-dropdown{position:absolute;bottom:calc(100% + 8px);right:0;width:215px;
+  background:#2a2a2a;border:1px solid #444;border-radius:12px;
+  box-shadow:0 12px 44px rgba(0,0,0,.65);padding:6px;z-index:50;
+  display:none;flex-direction:column;gap:1px}
+.more-dropdown.show{display:flex;animation:fsin .15s ease}
+.md-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;
+  cursor:pointer;transition:background .15s;color:#ddd;font-size:13px;font-weight:600}
+.md-item:hover,.md-item.highlighted{background:rgba(124,58,237,.25)}
+.md-item.highlighted{animation:glow .8s infinite alternate}
+@keyframes glow{from{background:rgba(124,58,237,.15)}to{background:rgba(124,58,237,.32)}}
+.md-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.md-label{flex:1}.md-chev{color:#777;font-size:11px}
+.md-sep{height:1px;background:#3a3a3a;margin:3px 0}
+
+/* Toolbar */
+.z-toolbar{background:#2D2D2D;border-top:1px solid #3a3a3a;padding:5px 6px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:nowrap;border-radius:0 0 14px 14px;position:relative}
+.tb-grp{display:flex;align-items:center}
+.zb{display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:5px;border-radius:8px;cursor:pointer;border:2px solid transparent;
+  background:transparent;transition:all .2s;position:relative;min-width:42px;user-select:none}
+.zb:hover{background:rgba(255,255,255,.08)}
+.zb.highlighted{background:rgba(124,58,237,.22);border-color:var(--purple);animation:pulse 1.5s infinite}
+.zb .zi{font-size:16px;color:#fff;line-height:1}
+.zb .zl{font-size:8px;color:#aaa;font-weight:700;white-space:nowrap;font-family:var(--font)}
+.zb .arr{position:absolute;top:2px;right:2px;font-size:7px;color:#555}
+.zb.highlighted .zl{color:#C4B5FD}
+.zb.leave-btn{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.22)}
+.zb.leave-btn:hover{background:rgba(239,68,68,.28)}
+.zb.leave-btn .zi{color:#fff;background:var(--danger);border-radius:50%;
+  width:20px;height:20px;font-size:11px;display:flex;align-items:center;justify-content:center}
+.zb.leave-btn .zl{color:var(--danger)}
+.zb.share-btn{background:rgba(45,140,255,.12);border:1px solid rgba(45,140,255,.2)}
+.zb.share-btn .zi{color:var(--blue)}.zb.share-btn .zl{color:#93C5FD}
+.zb .tip{position:absolute;bottom:calc(100%+6px);left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.92);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;
+  border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;z-index:100;
+  transition:opacity .15s;font-family:var(--font)}
+.zb:hover .tip{opacity:1}
+.hl-lbl{position:absolute;top:-26px;left:50%;transform:translateX(-50%);
+  background:var(--purple);color:#fff;font-size:9px;font-weight:800;
+  padding:2px 7px;border-radius:4px;pointer-events:none;white-space:nowrap;
+  z-index:20;opacity:0;transition:opacity .2s}
+.zb.highlighted .hl-lbl{opacity:1}
+.leave-btn .hl-lbl{background:var(--danger)}
+
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.5)}
+  50%{box-shadow:0 0 0 8px rgba(124,58,237,0)}
+}
+@keyframes fsin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ PHONE MOCKUP ══ */
+.mobile-wrap{display:flex;align-items:flex-start;justify-content:center;
+  gap:16px;width:100%;max-width:700px}
+.phone{width:268px;background:#111;border-radius:44px;border:7px solid #2a2a2a;
+  box-shadow:0 20px 58px rgba(0,0,0,.65);overflow:hidden;position:relative;flex-shrink:0}
+.ph-notch{background:#111;height:30px;display:flex;align-items:center;
+  justify-content:center;position:relative}
+.ph-pill{width:88px;height:26px;background:#1e1e1e;border-radius:99px;
+  position:absolute;top:2px}
+.ph-cam-dot{width:8px;height:8px;background:#1a3a1a;border-radius:50%;
+  position:absolute;top:9px;right:58px;z-index:1}
+.ph-cam-dot.active{background:var(--green)}
+.ph-status{background:#1F1F1F;padding:4px 16px;display:flex;
+  justify-content:space-between;align-items:center}
+.ph-time{color:#fff;font-size:13px;font-weight:800}
+.ph-icons{color:#ccc;font-size:11px;display:flex;gap:4px}
+.ph-topbar{background:#1F1F1F;padding:6px 12px;display:flex;align-items:center;
+  border-bottom:1px solid #2a2a2a}
+.ph-expand{color:#aaa;font-size:14px;margin-right:8px;cursor:pointer;
+  border:none;background:transparent;transition:color .2s}
+.ph-expand:hover,.ph-expand.highlighted{color:var(--purple)}
+.ph-meeting-name{flex:1;color:#fff;font-size:11px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.ph-meeting-caret{color:#888;font-size:10px;margin-left:3px}
+.ph-top-icons{display:flex;gap:5px;align-items:center}
+.ph-ti{background:rgba(255,255,255,.1);border:none;border-radius:6px;
+  color:#ccc;font-size:13px;padding:4px 8px;cursor:pointer;font-family:var(--font);
+  transition:all .2s;display:flex;align-items:center;gap:3px}
+.ph-ti:hover,.ph-ti.highlighted{background:var(--purple);color:#fff;animation:pulse 1.5s infinite}
+.ph-ti span{font-size:10px;font-weight:700}
+.ph-video{background:#1F1F1F;min-height:250px;position:relative;
+  display:flex;flex-direction:column}
+.ph-main-video{flex:1;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:7px;min-height:200px}
+.ph-av{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:22px;font-weight:900;color:#fff}
+.ph-spk{color:#fff;font-size:12px;font-weight:700}
+.ph-self-tile{position:absolute;top:10px;right:10px;width:68px;height:90px;
+  background:#333;border-radius:8px;border:2px solid #555;display:flex;
+  align-items:center;justify-content:center;flex-direction:column;gap:3px;
+  cursor:pointer;transition:all .2s}
+.ph-self-tile.highlighted{border-color:var(--purple);animation:pulse 1.5s infinite}
+.ph-self-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:900;color:#fff}
+.ph-self-lbl{color:#888;font-size:8px;font-weight:700}
+.ph-ntag{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.7);
+  color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px}
+.ph-sec-badge{position:absolute;top:8px;left:8px;background:rgba(0,128,0,.8);
+  border-radius:7px;width:26px;height:26px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;cursor:pointer}
+.ph-toolbar{background:#2D2D2D;padding:9px 0 5px;display:flex;align-items:center;
+  justify-content:space-around;border-top:1px solid #3a3a3a}
+.mb{display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:5px 9px;border-radius:8px;cursor:pointer;border:2px solid transparent;
+  background:transparent;transition:all .2s;user-select:none;min-width:42px}
+.mb .zi{font-size:20px;color:#fff;line-height:1}
+.mb .zl{font-size:8px;color:#aaa;font-weight:700;font-family:var(--font);white-space:nowrap}
+.mb.highlighted{background:rgba(124,58,237,.22);border-color:var(--purple);animation:pulse 1.5s infinite}
+.mb.highlighted .zl{color:#C4B5FD}
+.mb.leave-btn .zi{color:#fff;background:var(--danger);border-radius:50%;
+  width:24px;height:24px;font-size:14px;display:flex;align-items:center;justify-content:center}
+.mb.leave-btn .zl{color:var(--danger)}
+.ph-home-ind{height:4px;background:#fff;border-radius:99px;width:78px;margin:6px auto 0}
+
+/* Mobile More Sheet */
+.ph-more-sheet{position:absolute;bottom:0;left:0;right:0;background:#1A1A1A;
+  border-radius:16px 16px 0 0;padding:12px;z-index:40;display:none;
+  flex-direction:column;gap:10px;border-top:1px solid #333;
+  max-height:92%;overflow-y:auto}
+.ph-more-sheet.show{display:flex;animation:slideup .2s ease}
+@keyframes slideup{from{transform:translateY(50%);opacity:0}to{transform:translateY(0);opacity:1}}
+.ph-sheet-handle{width:36px;height:4px;background:#555;border-radius:99px;margin:0 auto 4px}
+.ph-sheet-close{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.1);
+  border:none;border-radius:99px;color:#aaa;font-size:16px;padding:2px 8px;
+  cursor:pointer;font-family:var(--font)}
+.ph-raise-hand{display:flex;align-items:center;gap:8px;background:#2a2a2a;
+  border-radius:10px;padding:10px 16px;cursor:pointer;border:2px solid transparent;
+  transition:all .2s}
+.ph-raise-hand.highlighted{border-color:var(--purple);background:rgba(124,58,237,.2);
+  animation:pulse 1.5s infinite}
+.ph-raise-hand .rh-icon{font-size:18px}
+.ph-raise-hand .rh-text{font-size:14px;font-weight:800;color:#fff}
+.ph-reactions-row{display:flex;align-items:center;gap:4px;background:#2a2a2a;
+  border-radius:10px;padding:8px 10px}
+.ph-react-emoji{font-size:22px;cursor:pointer;padding:3px 6px;
+  border-radius:6px;transition:background .15s}
+.ph-react-emoji:hover{background:rgba(255,255,255,.15)}
+.ph-react-more{margin-left:auto;background:rgba(255,255,255,.1);border:none;
+  border-radius:6px;color:#ccc;font-size:11px;padding:3px 8px;cursor:pointer;
+  font-weight:800;font-family:var(--font)}
+.ph-more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ph-mg-item{display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:10px 5px;border-radius:10px;cursor:pointer;background:#2a2a2a;
+  border:2px solid transparent;transition:all .2s;position:relative}
+.ph-mg-item:hover{background:#333}
+.ph-mg-item.highlighted{border-color:var(--purple);background:rgba(124,58,237,.2);
+  animation:pulse 1.5s infinite}
+.ph-mg-item .mg-icon{font-size:22px;line-height:1}
+.ph-mg-item .mg-label{font-size:10px;font-weight:700;color:#ccc;
+  text-align:center;line-height:1.2}
+.ph-mg-item .mg-badge{position:absolute;top:5px;right:5px;background:var(--purple);
+  color:#fff;font-size:8px;font-weight:800;width:14px;height:14px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center}
+/* Mobile Participants Panel */
+.ph-pp-panel{position:absolute;top:0;right:0;bottom:0;width:100%;background:#1a1a1a;
+  z-index:50;display:none;flex-direction:column;overflow:hidden}
+.ph-pp-panel.show{display:flex;animation:slidein .2s ease}
+@keyframes slidein{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.ph-pp-hdr{background:#2a2a2a;padding:10px 12px;display:flex;align-items:center;
+  justify-content:space-between;border-bottom:1px solid #3a3a3a;flex-shrink:0}
+.ph-pp-close{background:rgba(255,255,255,.1);border:none;border-radius:99px;
+  color:#aaa;font-size:14px;padding:2px 8px;cursor:pointer;font-family:var(--font)}
+.ph-pp-list{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:5px}
+.ph-pr{display:flex;align-items:center;gap:7px;padding:6px 4px;
+  border-radius:7px;cursor:pointer;transition:background .15s}
+.ph-pr:hover{background:rgba(255,255,255,.05)}
+.ph-pr-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0}
+.ph-pr-info{flex:1;min-width:0}
+.ph-pr-name{color:#ddd;font-size:11px;font-weight:700;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.ph-pr-role{color:#888;font-size:9px;font-weight:600}
+.ph-pr-btn{background:rgba(255,255,255,.1);border:none;border-radius:5px;
+  color:#ccc;font-size:9px;padding:3px 7px;cursor:pointer;font-weight:800;
+  font-family:var(--font);white-space:nowrap;flex-shrink:0;transition:all .2s}
+.ph-pr-btn:hover,.ph-pr-btn.highlighted{background:var(--purple);color:#fff}
+.ph-mute-all-btn{width:100%;margin-top:4px;padding:8px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.1);border-radius:7px;color:#bbb;font-size:11px;
+  font-weight:800;font-family:var(--font);cursor:pointer;transition:all .2s}
+.ph-mute-all-btn:hover{background:var(--purple);color:#fff}
+
+/* Callouts */
+.mobile-callouts{display:flex;flex-direction:column;gap:9px;max-width:185px;padding-top:20px}
+.mc{background:#fff;border-radius:10px;padding:10px 12px;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);font-size:11px;line-height:1.5;
+  border-left:3px solid var(--purple);color:#374151;font-weight:600}
+.mc.tip-mc{background:#FFFBEB;border-left-color:var(--yellow);color:#78350F}
+.mc.green-mc{background:#F0FDF4;border-left-color:var(--green);color:#14532D}
+@media(max-width:600px){.mobile-callouts{display:none}}
+
+/* ══ ANSWER PANEL ══ */
+.answer-panel{background:#fff;border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto}
+.ap-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:30px;text-align:center;gap:14px}
+.ap-placeholder .big-icon{font-size:60px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.ap-placeholder h3{font-size:18px;font-weight:900;color:#5B21B6}
+.ap-placeholder p{font-size:13px;line-height:1.6;color:var(--muted);max-width:230px}
+.fun-hint{background:linear-gradient(135deg,#EDE9FE,#FDF4FF);border-radius:10px;
+  padding:10px 14px;font-size:12px;font-weight:700;color:var(--purple);
+  border:1px solid #C4B5FD;line-height:1.5}
+.ap-content{padding:20px;display:none;flex-direction:column;gap:14px}
+.ap-content.show{display:flex;animation:fsin .25s ease}
+.ap-hdr{padding-bottom:11px;border-bottom:2px solid var(--border)}
+.ap-cat{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1px;color:var(--purple);margin-bottom:4px}
+.ap-q{font-size:17px;font-weight:900;line-height:1.3}
+.ap-text{font-size:14px;line-height:1.8;color:#374151}
+.steps{display:flex;flex-direction:column;gap:9px}
+.steps-lbl{font-size:11px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--muted)}
+.step{display:flex;gap:10px;align-items:flex-start}
+.step-n{width:26px;height:26px;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;flex-shrink:0;margin-top:2px;
+  box-shadow:0 2px 8px rgba(124,58,237,.35)}
+.step-t{font-size:14px;line-height:1.55;color:#374151;padding-top:3px}
+.tip-box{background:linear-gradient(135deg,#FFFBEB,#FFF8E1);
+  border:1px solid #FDE68A;border-left:4px solid var(--yellow);
+  border-radius:9px;padding:10px 13px;font-size:13px;line-height:1.6;color:#78350F}
+.warn-box{background:linear-gradient(135deg,#FFF1F2,#FEF2F2);
+  border:1px solid #FECACA;border-left:4px solid var(--danger);
+  border-radius:9px;padding:10px 13px;font-size:13px;line-height:1.6;color:#7F1D1D}
+.info-box{background:linear-gradient(135deg,#EFF6FF,#EDE9FE);
+  border:1px solid #C4B5FD;border-left:4px solid var(--purple);
+  border-radius:9px;padding:10px 13px;font-size:13px;line-height:1.6;color:#5B21B6}
+.sc-box{background:#F5F0FF;border:1px solid #C4B5FD;border-radius:9px;
+  padding:9px 13px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.sc-key{background:#fff;border:2px solid #CBD5E1;border-bottom:3px solid #94A3B8;
+  border-radius:6px;padding:3px 10px;font-size:13px;font-weight:800;
+  color:#374151;white-space:nowrap}
+.sc-txt{font-size:13px;color:#5B21B6;font-weight:700}
+.ap-nav{display:flex;gap:7px;padding-top:10px;
+  border-top:2px solid var(--border);margin-top:auto}
+.nav-b{flex:1;padding:9px;border:2px solid var(--border);border-radius:9px;
+  font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;
+  background:#fff;color:var(--muted);transition:all .2s;text-align:center}
+.nav-b:hover:not(:disabled){border-color:var(--purple);color:var(--purple);background:#F5F0FF}
+.nav-b:disabled{opacity:.3;cursor:default}
+
+/* ══ CONFETTI ══ */
+.confetti-piece{position:fixed;top:-20px;pointer-events:none;z-index:9999;font-size:20px;
+  animation:confettiFall linear forwards}
+@keyframes confettiFall{
+  0%  {transform:translateY(0) rotate(0deg) scale(1);opacity:1}
+  100%{transform:translateY(110vh) rotate(720deg) scale(.4);opacity:0}
+}
+
+/* ══ MISC ══ */
+body.beginner .adv-only{display:none!important}
+@media print{body{display:none}}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#C4B5FD;border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--purple)}
+</style>
+</head>
+<body class="beginner">
+
+<header class="hdr">
+  <div class="hdr-left">
+    <div style="position:relative;width:52px;height:52px;flex-shrink:0;cursor:pointer;user-select:none" onclick="bounceDancer()" title="Click me! 🎉">
+      <span class="dstar">⭐</span><span class="dstar">✨</span><span class="dstar">🌟</span>
+      <div id="theDancer" style="font-size:34px;position:absolute;bottom:0;left:50%;transform-origin:bottom center;animation:twerk .45s ease-in-out infinite alternate">🕺</div>
+    </div>
+    <div class="hdr-titles">
+      <div class="hdr-title">Zoom Help Guide 🎉</div>
+      <div class="hdr-sub">AA Meeting Training — Tech is NOT scary, I promise! 💪</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="tog-group">
+      <button class="tog-btn active" onclick="setMode('beginner',this)">🌱 Beginner</button>
+      <button class="tog-btn" onclick="setMode('all',this)">🎓 All Topics</button>
+    </div>
+    <button class="icon-btn" onclick="printGuide()">🖨️<span class="btn-text"> Print Guide</span></button>
+  </div>
+</header>
+
+<div class="layout" id="mainLayout" data-tab="q">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <nav class="sidebar">
+    <div class="sb-search">
+      <div class="search-wrap">
+        <input class="search-in" id="searchIn" type="text"
+          placeholder="Search any question…"
+          oninput="filterQ(this.value)" autocomplete="off">
+      </div>
+    </div>
+    <div class="sb-fun" id="sbFun">🕺 Click a question — you've got this!</div>
+    <div id="faqList"></div>
+  </nav>
+
+  <!-- ═══ CENTER ═══ -->
+  <main class="center">
+    <div class="welcome-bar" id="welcomeBar">
+      <span class="wb-icon">👆</span>
+      <div class="wb-text">
+        <strong>Tap any question on the left — or tap any button on the Zoom screen!</strong>
+        The matching button lights up purple and a full explanation pops up. You've got this! 🎉
+      </div>
+    </div>
+
+    <div class="ui-tabs">
+      <button class="ui-tab active" onclick="switchUI('desktop',this)">🖥️ Desktop / Laptop</button>
+      <button class="ui-tab" onclick="switchUI('mobile',this)">📱 Phone / Tablet</button>
+    </div>
+
+    <!-- ═══════════ DESKTOP UI ═══════════ -->
+    <div id="desktopUI" class="zoom-desktop">
+
+      <!-- Title bar -->
+      <div class="zoom-titlebar">
+        <div class="wcs"><div class="wc r"></div><div class="wc y"></div><div class="wc g"></div></div>
+        <div class="ztitle-area">
+          <div class="ztitle">One Day at a Zoom Meeting</div>
+          <div class="ztimer" id="ztimer">00:00</div>
+        </div>
+        <div class="z-top-right">
+          <button class="z-top-icon" id="top-captions" onclick="hClick('captions')">CC Captions</button>
+          <button class="z-top-icon" id="top-view" onclick="hClick('gallery-view')">⊞ View</button>
+          <button class="z-top-icon" id="top-shield" onclick="hClick('security')" title="Security status">🛡️</button>
+        </div>
+      </div>
+
+      <!-- Video tiles -->
+      <div class="z-video-area" id="videoArea">
+        <div class="view-btn" id="galleryViewBtn" onclick="hClick('gallery-view')" style="position:absolute;top:8px;right:8px;z-index:5;cursor:pointer;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);border-radius:5px;color:#fff;font-size:10px;padding:3px 9px;font-weight:700;font-family:var(--font)">⊞ Gallery View</div>
+
+        <div class="vtile speaking" onclick="hClick('spotlight')">
+          <div class="av" style="background:#2D8CFF">AO</div>
+          <div class="ntag">Anne Onymous ⭐ Host</div>
+          <div class="mic-ind">🎙️</div>
+        </div>
+        <div class="vtile" onclick="hClick('participant-video')">
+          <div class="av" style="background:#7C3AED">AK</div>
+          <div class="ntag">Al K. Hall</div>
+          <div class="mic-ind">🔇</div>
+        </div>
+        <div class="vtile" onclick="hClick('participant-video')">
+          <div class="av" style="background:#059669">DT</div>
+          <div class="ntag">Dee Tox</div>
+          <div class="mic-ind">🎙️</div>
+        </div>
+        <div class="vtile" onclick="hClick('participant-video')">
+          <div class="av" style="background:#D97706">WP</div>
+          <div class="ntag">Will Power ✋</div>
+          <div class="mic-ind">🔇</div>
+        </div>
+        <div class="vtile" style="background:#111" onclick="hClick('camera-off')">
+          <span style="font-size:26px;opacity:.3">📷</span>
+          <div class="ntag">Chip Turner — No Video</div>
+        </div>
+        <div class="vtile" onclick="hClick('participant-video')">
+          <div class="av" style="background:#DC2626">MJ</div>
+          <div class="ntag">Mary Juana</div>
+          <div class="mic-ind">🎙️</div>
+        </div>
+
+        <!-- Participants Panel -->
+        <div class="z-pp" id="zPP">
+          <div class="pp-title">👥 Participants (6) <span class="wr-badge">⏳ WR: 2</span></div>
+          <div class="pr">
+            <div class="pr-av" style="background:#2D8CFF">AO</div>
+            <div class="pr-name">Anne Onymous (You, Host)</div>
+            <div class="pr-actions"></div>
+          </div>
+          <div class="pr">
+            <div class="pr-av" style="background:#7C3AED">AK</div>
+            <div class="pr-name">Al K. Hall</div>
+            <div class="pr-actions">
+              <button class="pbt" id="cohost-btn" onclick="hClick('make-cohost')">Co-Host</button>
+              <button class="pbt danger-bt" id="remove-btn" onclick="hClick('remove-participant')">Remove</button>
+            </div>
+          </div>
+          <div class="pr">
+            <div class="pr-av" style="background:#059669">DT</div>
+            <div class="pr-name">Dee Tox</div>
+            <div class="pr-actions"><button class="pbt" id="rename-btn" onclick="hClick('rename')">Rename</button></div>
+          </div>
+          <div class="pr" style="background:rgba(245,158,11,.08);border-radius:5px;padding:4px 3px">
+            <div class="pr-av" style="background:#F59E0B">⏳</div>
+            <div class="pr-name" style="color:#F59E0B;font-size:9px">Waiting Room (2)</div>
+            <div class="pr-actions"><button class="pbt" id="admit-btn" onclick="hClick('waiting-room')" style="background:#F59E0B;color:#fff">Admit</button></div>
+          </div>
+          <div class="pr">
+            <div class="pr-av" style="background:#D97706">WP</div>
+            <div class="pr-name">Will Power ✋</div>
+            <div class="pr-actions">
+              <button class="pbt" id="mute-ppt-btn" onclick="hClick('mute-participants')">Mute</button>
+              <button class="pbt" id="lower-hand-btn" onclick="hClick('raise-hand')" style="color:#F59E0B">Lower</button>
+            </div>
+          </div>
+          <button class="mute-all-btn" id="mute-all-btn" onclick="hClick('mute-participants')">🔇 Mute All Participants</button>
+        </div>
+
+        <!-- More dropdown — matches screenshot order exactly -->
+        <div class="more-dropdown" id="moreDropdown">
+          <div class="md-item" id="md-record" onclick="hClick('record')">
+            <span class="md-icon">⏺️</span><span class="md-label">Record</span><span class="md-chev">›</span>
+          </div>
+          <div class="md-item" id="md-captions" onclick="hClick('captions')">
+            <span class="md-icon" style="font-size:13px;font-weight:900;letter-spacing:-1px">CC</span><span class="md-label">Captions</span>
+          </div>
+          <div class="md-item" id="md-notes" onclick="hClick('notes')">
+            <span class="md-icon">📝</span><span class="md-label">Notes</span><span class="md-chev">›</span>
+          </div>
+          <div class="md-item" id="md-whiteboard" onclick="hClick('whiteboard')">
+            <span class="md-icon">🖥️</span><span class="md-label">Whiteboard</span><span class="md-chev">›</span>
+          </div>
+          <div class="md-sep"></div>
+          <div class="md-item" id="md-meetinginfo" onclick="hClick('meeting-info')">
+            <span class="md-icon">ℹ️</span><span class="md-label">Meeting info</span>
+          </div>
+          <div class="md-item" id="md-transfer" onclick="hClick('transfer')">
+            <span class="md-icon" style="font-size:14px">⇄</span><span class="md-label">Transfer meeting to room</span>
+          </div>
+          <div class="md-sep"></div>
+          <div class="md-item" onclick="closeMoreMenu()" style="flex-direction:column;align-items:flex-start;gap:1px">
+            <div style="display:flex;align-items:center;gap:9px;width:100%"><span class="md-icon">↺</span><span class="md-label">Reset to default</span></div>
+            <div style="font-size:10px;color:#666;padding-left:29px">Drag to reorder toolbar</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TOOLBAR (matches screenshot exactly) ── -->
+      <div class="z-toolbar">
+        <!-- Left group: Audio, Video -->
+        <div class="tb-grp">
+          <div class="zb" id="btn-mute" onclick="hClick('mute')">
+            <div class="hl-lbl">Mute / Unmute</div>
+            <div class="tip">Mute / Unmute your mic</div>
+            <span class="zi">🎙️</span><span class="zl">Audio</span><span class="arr">▲</span>
+          </div>
+          <div class="zb" id="btn-video" onclick="hClick('video')">
+            <div class="hl-lbl">Camera On/Off</div>
+            <div class="tip">Start / Stop your camera</div>
+            <span class="zi">📹</span><span class="zl">Video</span><span class="arr">▲</span>
+          </div>
+        </div>
+
+        <!-- Center group: Participants, Chat, React, Share, Host tools, AI Companion, Apps, Record -->
+        <div class="tb-grp">
+          <div class="zb" id="btn-participants" onclick="toggleParticipants()">
+            <div class="hl-lbl">Participants</div>
+            <div class="tip">Open / Close Participants list</div>
+            <span class="zi">👥</span><span class="zl">Participants</span><span class="arr">▲</span>
+          </div>
+          <div class="zb" id="btn-chat" onclick="hClick('chat')">
+            <div class="hl-lbl">Chat</div>
+            <div class="tip">Open in-meeting chat</div>
+            <span class="zi">💬</span><span class="zl">Chat</span><span class="arr">▲</span>
+          </div>
+          <div class="zb" id="btn-react" onclick="hClick('reactions')">
+            <div class="hl-lbl">React + Raise Hand</div>
+            <div class="tip">Reactions & Raise Hand</div>
+            <span class="zi">❤️</span><span class="zl">React</span><span class="arr">▲</span>
+          </div>
+          <div class="zb share-btn" id="btn-share" onclick="hClick('share')">
+            <div class="hl-lbl">Share Screen</div>
+            <div class="tip">Share your screen or files</div>
+            <span class="zi" style="color:var(--blue)">⬆️</span><span class="zl">Share</span><span class="arr" style="color:var(--blue)">▲</span>
+          </div>
+          <div class="zb adv-only" id="btn-hosttools" onclick="hClick('host-tools')">
+            <div class="hl-lbl">Host Tools</div>
+            <div class="tip">Security, Breakout Rooms & more</div>
+            <span class="zi">🛡️</span><span class="zl">Host tools</span>
+          </div>
+          <div class="zb" id="btn-ai" onclick="hClick('ai-companion')">
+            <div class="hl-lbl">AI Companion</div>
+            <div class="tip">AI Companion features</div>
+            <span class="zi">✨</span><span class="zl">AI Companion</span>
+          </div>
+          <div class="zb adv-only" id="btn-apps" onclick="hClick('apps')">
+            <div class="hl-lbl">Apps</div>
+            <div class="tip">Zoom Apps</div>
+            <span class="zi">📦</span><span class="zl">Apps</span><span class="arr">▲</span>
+          </div>
+          <div class="zb adv-only" id="btn-record" onclick="hClick('record')">
+            <div class="hl-lbl">Record</div>
+            <div class="tip">Record this meeting</div>
+            <span class="zi">⏺️</span><span class="zl">Record</span>
+          </div>
+        </div>
+
+        <!-- Right group: More, End -->
+        <div class="tb-grp">
+          <div class="zb" id="btn-more" onclick="toggleMore()">
+            <div class="hl-lbl">More</div>
+            <div class="tip">More options</div>
+            <span class="zi">•••</span><span class="zl">More</span>
+          </div>
+          <div class="zb leave-btn" id="btn-leave" onclick="hClick('leave')">
+            <div class="hl-lbl" style="background:#EF4444">Leave/End</div>
+            <div class="tip">Leave or End the meeting</div>
+            <span class="zi">✕</span><span class="zl">End</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /zoom-desktop -->
+
+    <!-- ═══════════ MOBILE UI ═══════════ -->
+    <div id="mobileUI" style="display:none" class="mobile-wrap">
+      <div class="phone">
+        <!-- Notch -->
+        <div class="ph-notch">
+          <div class="ph-pill"></div>
+          <div class="ph-cam-dot active"></div>
+        </div>
+        <!-- Status bar -->
+        <div class="ph-status">
+          <div class="ph-time">10:34</div>
+          <div class="ph-icons">📶 🛜 🔋84%</div>
+        </div>
+        <!-- In-meeting top bar -->
+        <div class="ph-topbar">
+          <button class="ph-expand" id="ph-expand" onclick="hClick('gallery-view')" title="Expand / Gallery">⤢</button>
+          <span class="ph-meeting-name">One Day at a Zoom<span class="ph-meeting-caret"> ⌄</span></span>
+          <div class="ph-top-icons">
+            <button class="ph-ti" id="ph-cam-flip" onclick="hClick('video')" title="Flip camera">🔄<span>Flip</span></button>
+            <button class="ph-ti" id="ph-speaker" onclick="hClick('cant-hear-others')" title="Speaker / Audio output">🔊</button>
+            <button class="ph-ti" id="ph-ai-icon" onclick="hClick('ai-companion')" title="AI Companion">✨</button>
+          </div>
+        </div>
+
+        <!-- Video area -->
+        <div class="ph-video">
+          <div class="ph-main-video">
+            <div class="ph-av" style="background:#2D8CFF">AO</div>
+            <div class="ph-spk">Anne Onymous — Host</div>
+          </div>
+          <!-- Self-view tile -->
+          <div class="ph-self-tile" id="ph-self" onclick="hClick('video')">
+            <div class="ph-self-av" style="background:#059669">ME</div>
+            <div class="ph-self-lbl">You</div>
+          </div>
+          <div class="ph-ntag">One Day at a Zoom · 00:00</div>
+          <!-- Security badge -->
+          <div class="ph-sec-badge" onclick="hClick('host-tools')" title="Meeting is secure">✅</div>
+        </div>
+
+        <!-- MORE SHEET — direct child of .phone so it isn't clipped by ph-video -->
+        <div class="ph-more-sheet" id="phMoreSheet">
+          <div class="ph-sheet-handle"></div>
+          <button class="ph-sheet-close" onclick="closeMobileMore()">✕</button>
+
+          <!-- Raise Hand prominent button -->
+          <div class="ph-raise-hand" id="ph-raise-hand" onclick="hClick('raise-hand');closeMobileMore()">
+            <span class="rh-icon">✋</span>
+            <span class="rh-text">Raise hand</span>
+          </div>
+
+          <!-- Reactions row -->
+          <div class="ph-reactions-row" onclick="hClick('reactions')">
+            <span class="ph-react-emoji" onclick="hClick('reactions')">🎉</span>
+            <span class="ph-react-emoji" onclick="hClick('reactions')">👍</span>
+            <span class="ph-react-emoji" onclick="hClick('reactions')">❤️</span>
+            <button class="ph-react-more">•••</button>
+          </div>
+
+          <!-- Grid of features -->
+          <div class="ph-more-grid">
+            <div class="ph-mg-item" id="ph-mg-participants" onclick="toggleMobileParticipants()">
+              <span class="mg-icon">👥</span>
+              <span class="mg-label">Participants</span>
+              <span class="mg-badge">6</span>
+            </div>
+            <div class="ph-mg-item" id="ph-mg-share" onclick="hClick('share');closeMobileMore()">
+              <span class="mg-icon">⬆️</span>
+              <span class="mg-label">Share</span>
+            </div>
+            <div class="ph-mg-item adv-only" id="ph-mg-record" onclick="hClick('record');closeMobileMore()">
+              <span class="mg-icon">⏺️</span>
+              <span class="mg-label">Record</span>
+            </div>
+            <div class="ph-mg-item" id="ph-mg-cc" onclick="hClick('captions');closeMobileMore()">
+              <span class="mg-icon" style="font-size:14px;font-weight:900">CC</span>
+              <span class="mg-label">Show CC</span>
+            </div>
+            <div class="ph-mg-item" id="ph-mg-notes" onclick="hClick('notes');closeMobileMore()">
+              <span class="mg-icon">📝</span>
+              <span class="mg-label">Notes</span>
+            </div>
+            <div class="ph-mg-item" id="ph-mg-apps" onclick="hClick('apps');closeMobileMore()">
+              <span class="mg-icon">📦</span>
+              <span class="mg-label">Apps</span>
+            </div>
+            <div class="ph-mg-item" id="ph-mg-meetinginfo" onclick="hClick('meeting-info');closeMobileMore()">
+              <span class="mg-icon">ℹ️</span>
+              <span class="mg-label">Meeting info</span>
+            </div>
+            <div class="ph-mg-item adv-only" id="ph-mg-hosttools" onclick="hClick('host-tools');closeMobileMore()">
+              <span class="mg-icon">🛡️</span>
+              <span class="mg-label">Host tools</span>
+            </div>
+            <div class="ph-mg-item" id="ph-mg-settings" onclick="hClick('test-av');closeMobileMore()">
+              <span class="mg-icon">⚙️</span>
+              <span class="mg-label">Settings</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MOBILE PARTICIPANTS PANEL — direct child of .phone, slides in from right -->
+        <div class="ph-pp-panel" id="phPPPanel">
+          <div class="ph-pp-hdr">
+            <span style="font-size:13px;font-weight:800;color:#fff">👥 Participants (6)</span>
+            <button class="ph-pp-close" onclick="closeMobileParticipants()">✕</button>
+          </div>
+          <div class="ph-pp-list">
+            <div class="ph-pr">
+              <div class="ph-pr-av" style="background:#2D8CFF">AO</div>
+              <div class="ph-pr-info"><div class="ph-pr-name">Anne Onymous</div><div class="ph-pr-role">Host (You)</div></div>
+            </div>
+            <div class="ph-pr" onclick="hClick('make-cohost')">
+              <div class="ph-pr-av" style="background:#7C3AED">AK</div>
+              <div class="ph-pr-info"><div class="ph-pr-name">Al K. Hall</div></div>
+              <button class="ph-pr-btn" id="ph-cohost-btn" onclick="hClick('make-cohost')">Co-Host</button>
+            </div>
+            <div class="ph-pr" onclick="hClick('rename')">
+              <div class="ph-pr-av" style="background:#059669">DT</div>
+              <div class="ph-pr-info"><div class="ph-pr-name">Dee Tox</div></div>
+              <button class="ph-pr-btn" id="ph-rename-btn" onclick="hClick('rename')">Rename</button>
+            </div>
+            <div class="ph-pr" style="background:rgba(245,158,11,.1);border-radius:8px;padding:6px" onclick="hClick('waiting-room')">
+              <div class="ph-pr-av" style="background:#F59E0B">⏳</div>
+              <div class="ph-pr-info"><div class="ph-pr-name" style="color:#F59E0B">Waiting Room (2)</div></div>
+              <button class="ph-pr-btn" id="ph-admit-btn" style="background:#F59E0B;color:#fff" onclick="hClick('waiting-room')">Admit</button>
+            </div>
+            <div class="ph-pr" onclick="hClick('raise-hand')">
+              <div class="ph-pr-av" style="background:#D97706">WP</div>
+              <div class="ph-pr-info"><div class="ph-pr-name">Will Power ✋</div></div>
+              <button class="ph-pr-btn" id="ph-lower-btn" onclick="hClick('raise-hand')" style="color:#F59E0B">Lower</button>
+            </div>
+            <div class="ph-pr">
+              <div class="ph-pr-av" style="background:#DC2626">MJ</div>
+              <div class="ph-pr-info"><div class="ph-pr-name">Mary Juana</div></div>
+              <button class="ph-pr-btn" id="ph-mute-btn" onclick="hClick('mute-participants')">Mute</button>
+            </div>
+            <button class="ph-mute-all-btn" id="ph-mute-all-btn" onclick="hClick('mute-participants')">🔇 Mute All</button>
+          </div>
+        </div>
+
+        <!-- Main toolbar — 5 buttons matching screenshot -->
+        <div class="ph-toolbar">
+          <div class="mb" id="mbtn-mute" onclick="hClick('mute')">
+            <span class="zi">🎙️</span><span class="zl">Mute</span>
+          </div>
+          <div class="mb" id="mbtn-video" onclick="hClick('video')">
+            <span class="zi">📹</span><span class="zl">Stop video</span>
+          </div>
+          <div class="mb" id="mbtn-chat" onclick="hClick('chat')">
+            <span class="zi">💬</span><span class="zl">Chat</span>
+          </div>
+          <div class="mb" id="mbtn-more" onclick="openMobileMore()">
+            <span class="zi" style="font-size:22px;letter-spacing:-2px">•••</span><span class="zl">More</span>
+          </div>
+          <div class="mb leave-btn" id="mbtn-leave" onclick="hClick('leave')">
+            <span class="zi">✕</span><span class="zl">End</span>
+          </div>
+        </div>
+        <div class="ph-home-ind"></div>
+      </div>
+
+      <div class="mobile-callouts">
+        <div class="mc">📱 <strong>Tap any button</strong> on the phone to see what it does!</div>
+        <div class="mc tip-mc">💡 On phones, <strong>Raise Hand, Record, Share</strong> and more are all under the <strong>More (•••)</strong> button</div>
+        <div class="mc green-mc">✅ The phone toolbar only shows 5 buttons — Mute, Video, Chat, More, and End</div>
+        <div class="mc" style="border-left-color:#7C3AED;background:#FAF5FF;color:#4C1D95">✨ <strong>AI Companion</strong> is the sparkle icon in the top bar — tap to ask questions about the meeting!</div>
+      </div>
+    </div>
+  </main><!-- /center -->
+
+  <!-- ═══ ANSWER PANEL ═══ -->
+  <aside class="answer-panel">
+    <div class="ap-placeholder" id="apPlaceholder">
+      <div class="big-icon">🔍</div>
+      <h3>Click a question or button</h3>
+      <p>Pick any question from the list on the left, or click any button on the Zoom interface above to see a clear, step-by-step explanation here.</p>
+    </div>
+    <div class="ap-content" id="apContent"></div>
+  </aside>
+
+  </main>
+
+  <!-- ═══ ANSWER PANEL ═══ -->
+  <aside class="answer-panel">
+    <div class="ap-placeholder" id="apPlaceholder">
+      <div class="big-icon">🤔</div>
+      <h3>Pick a question!</h3>
+      <p>Choose anything from the list on the left, or tap any button on the Zoom screen above.</p>
+      <div class="fun-hint">💡 No wrong answers here — explore away! Every question is a good one 🌟</div>
+    </div>
+    <div class="ap-content" id="apContent"></div>
+  </aside>
+
+</div><!-- /layout -->
+
+<!-- ═══ MOBILE BOTTOM TAB BAR ═══ -->
+<nav class="mob-nav">
+  <div class="mob-nav-inner">
+    <button class="mob-tab active" id="mobTabQ" onclick="switchTab('q')">
+      <span class="mt-icon">📋</span>Questions
+    </button>
+    <button class="mob-tab" id="mobTabUI" onclick="switchTab('ui')">
+      <span class="mt-icon">📱</span>Zoom Screen
+    </button>
+    <button class="mob-tab" id="mobTabAns" onclick="switchTab('ans')">
+      <span class="mt-icon">💡</span>Answer
+      <span class="ans-dot" id="ansDot"></span>
+    </button>
+  </div>
+</nav>
+
+<script>
+const FAQ = [
+  // ── GETTING STARTED ──
+  {id:'download',cat:'start',q:'How do I download and install Zoom?',lvl:'b',targets:[],
+    text:'Zoom is free to download from their website or your phone\'s app store.',
+    steps:['<b>On a computer:</b> Open any web browser and go to <b>zoom.us/download</b>',
+      'Click <b>"Download"</b> under "Zoom Desktop Client"',
+      'Open the downloaded file and follow the on-screen steps — it only takes a minute',
+      '<b>On iPhone/iPad:</b> Open the <b>App Store</b> → search "Zoom" → tap <b>Get</b>',
+      '<b>On Android:</b> Open the <b>Google Play Store</b> → search "Zoom" → tap <b>Install</b>'],
+    tips:['Zoom is completely free to download and free to <em>join</em> meetings. You only need a paid account if you want to host meetings longer than 40 minutes.']},
+
+  {id:'account',cat:'start',q:'Do I need an account to join a meeting?',lvl:'b',targets:[],
+    text:'No! You do NOT need a Zoom account to join someone else\'s meeting.',
+    steps:['Someone sends you a Zoom link (email, text, or group message)','Click the link','Zoom opens and asks for your name — type it in','Click <b>Join Meeting</b> — that\'s it!'],
+    tips:['You only need your own Zoom account if you want to <em>host</em> (run) your own meetings. To join someone else\'s meeting, no account is needed at all.']},
+
+  {id:'join-link',cat:'start',q:'How do I join a Zoom meeting from a link?',lvl:'b',targets:[],
+    text:'Joining from a link is the easiest way — just click and follow the prompts!',
+    steps:['Find the Zoom link in your email, text, or group message',
+      '<b>Click the link</b> — it usually starts with zoom.us/j/...',
+      'A box may pop up asking "Open Zoom?" — click <b>Open Zoom</b>',
+      'Type your <b>name</b> so others know who you are',
+      'Click <b>"Join with Computer Audio"</b> so you can hear and be heard',
+      'You\'re in! 🎉'],
+    tips:['Try to join 5–10 minutes early so you have time to check your sound and camera before the meeting starts.']},
+
+  {id:'app-vs-browser',cat:'start',q:'What\'s the difference between the Zoom app and joining from a browser?',lvl:'b',targets:[],
+    text:'The Zoom app (downloaded to your device) is recommended. Joining from your web browser also works but has fewer features.',
+    steps:['<b>Zoom App (recommended):</b> Download once, then it opens automatically from any Zoom link. Has all features — reactions, breakout rooms, best audio/video quality.',
+      '<b>Web Browser (Chrome, Firefox, Edge):</b> No download needed. Good for one-time use, but some features like reactions or Host Tools may not be available.'],
+    tips:['If Zoom asks "Would you like to download the app?" — say yes! It makes every future meeting easier.']},
+
+  {id:'sign-in',cat:'start',q:'How do I sign in to my Zoom account?',lvl:'b',targets:[],
+    text:'If you have a Zoom account (needed only for hosting), here\'s how to sign in.',
+    steps:['Open the Zoom app on your computer or phone',
+      'Click or tap <b>"Sign In"</b>',
+      'Enter your <b>email address</b> and <b>password</b>',
+      'Click <b>Sign In</b>',
+      'You can also sign in with your Google or Facebook account by clicking those buttons'],
+    tips:['Forgot your password? Click "Forgot?" on the sign-in screen and Zoom will email you a reset link.']},
+
+  // ── AUDIO & VIDEO ──
+  {id:'mute',cat:'av',q:'How do I mute and unmute myself?',lvl:'b',targets:['btn-mute','mbtn-mute'],
+    text:'The Audio/Microphone button controls whether others can hear you.',
+    steps:['Find the <b>Audio 🎙️ button</b> in the bottom-left of the toolbar (desktop) or bottom of the screen (phone)',
+      'Click or tap it to <b>mute</b> yourself — a red line (🚫) appears through the icon',
+      'Click again to <b>unmute</b> — the red line disappears',
+      '🔇 Red line through mic = muted (nobody hears you)',
+      '🎙️ No red line = unmuted (people CAN hear you)'],
+    shortcut:{key:'Spacebar (hold)',desc:'Hold the spacebar to temporarily unmute — release to mute again. Great for quick short responses!'},
+    tips:['Good habit: stay muted when you\'re not speaking. It stops background noise (barking dogs, TV, traffic) from interrupting others.']},
+
+  {id:'camera',cat:'av',q:'How do I turn my camera on or off?',lvl:'b',targets:['btn-video','mbtn-video','ph-self'],
+    text:'The Video button at the bottom controls your camera.',
+    steps:['Find the <b>Video 📹 button</b> in the toolbar',
+      'Click or tap it to turn your camera <b>ON</b> or <b>OFF</b>',
+      '📷🚫 Red line through camera = OFF (nobody sees you)',
+      '📹 No red line = ON (people CAN see you)',
+      'On mobile, your own camera image shows in the small <b>top-right tile</b>'],
+    shortcut:{key:'Alt + V',desc:'Toggle camera on Windows',mac:'⌘ + Shift + V on Mac'},
+    tips:['It\'s completely fine to join with your camera off. Many people do, especially when using a phone. You can still hear and speak normally.']},
+
+  {id:'cant-hear-me',cat:'av',q:'Why can\'t people hear me?',lvl:'b',targets:['btn-mute','mbtn-mute'],
+    text:'The most common reason is that you\'re muted! Here\'s how to troubleshoot.',
+    steps:['Check the <b>Audio/Mic button 🎙️</b> — if it has a <b>red line</b>, you\'re muted. Click to unmute.',
+      'If you\'re unmuted but still not heard: click the <b>small arrow ▲</b> next to the Audio button',
+      'Select <b>"Test Speaker & Microphone"</b>',
+      'Make sure the correct microphone is selected (especially with earbuds or a headset plugged in)',
+      'Check that Zoom has <b>permission</b> to use your microphone in your device Settings'],
+    warn:'If you joined using a phone dial-in number instead of the app, your mute is controlled by your phone keypad, not the Zoom buttons.',
+    tips:['You can type in the chat "Can you hear me?" and ask someone to confirm! 💬']},
+
+  {id:'cant-hear-others',cat:'av',q:'Why can\'t I hear other people?',lvl:'b',targets:['btn-mute','mbtn-mute','ph-speaker'],
+    text:'Usually a speaker or volume problem — easy to fix!',
+    steps:['Check your device\'s <b>volume</b> — press the physical volume buttons on your phone or keyboard',
+      'Make sure your device isn\'t on <b>silent/vibrate mode</b>',
+      'On desktop: click the <b>small arrow ▲</b> next to the Audio/Mic button → select the correct <b>speaker</b>',
+      'On mobile: tap the <b>speaker icon 🔊</b> in the top bar to switch between phone speaker, earpiece, or headphones',
+      'Try leaving the meeting and rejoining — this resets your audio connection'],
+    tips:['If headphones are plugged in, your laptop might be sending audio there even if you\'re not wearing them. Unplug them and try again!']},
+
+  {id:'test-av',cat:'av',q:'How do I test my microphone and camera?',lvl:'b',targets:['btn-mute','btn-video'],
+    text:'You can test before joining OR during a meeting!',
+    steps:['<b>Before a meeting:</b> Open Zoom → click your profile picture (top-right corner) → click <b>Settings</b>',
+      'Click <b>Audio</b> to test your speaker and microphone with the built-in test',
+      'Click <b>Video</b> to preview your camera',
+      '<b>During a meeting:</b> Click the <b>▲ arrow</b> next to the Audio button → <b>"Test Speaker & Microphone"</b>',
+      'Speak and watch for the green bar to move — if it moves, your mic is working!'],
+    tips:['The best time to test is 5–10 minutes before the meeting starts. Most audio problems can be caught and fixed with a quick pre-meeting test!']},
+
+  {id:'change-av',cat:'av',q:'How do I change my microphone or speaker?',lvl:'b',targets:['btn-mute'],
+    text:'You can switch between different microphones, speakers, or headphones anytime.',
+    steps:['Click the <b>small arrow ▲</b> next to the Audio button 🎙️',
+      'A list appears — select your microphone at the top',
+      'Select your speaker (where you hear sound) below that',
+      'On mobile: tap the <b>speaker icon 🔊</b> in the top bar to switch between phone speaker, earpiece, or Bluetooth'],
+    tips:['If you just plugged in headphones during a meeting, click this arrow and select them — Zoom doesn\'t always switch automatically.']},
+
+  // ── DURING A MEETING ──
+  {id:'raise-hand',cat:'meeting',q:'How do I raise my hand?',lvl:'b',targets:['btn-react','ph-raise-hand','lower-hand-btn'],
+    text:'Raising your hand signals to the host that you\'d like to speak — without interrupting.',
+    steps:['<b>On desktop:</b> Click the <b>React ❤️ button</b> in the toolbar',
+      'Click <b>"Raise Hand ✋"</b>',
+      'A hand icon appears next to your name for everyone to see',
+      '<b>On phone/tablet:</b> Tap the <b>More (•••)</b> button',
+      'Tap the big <b>"Raise hand" 🤚 button</b> at the top of the panel — it\'s the most prominent button there',
+      'To lower your hand: tap <b>React → Lower Hand</b> (desktop) or tap the Raise Hand button again (mobile)'],
+    tips:['The host can also lower your hand from the Participants panel once they\'ve called on you.']},
+
+  {id:'chat',cat:'meeting',q:'How do I use the chat feature?',lvl:'b',targets:['btn-chat','mbtn-chat'],
+    text:'Chat lets you type messages to everyone — or privately to one person — without interrupting.',
+    steps:['Click or tap the <b>Chat 💬 button</b> in the toolbar',
+      'A chat panel opens — click inside the text box at the bottom and type your message',
+      'Check the <b>"To:"</b> field — it should say "Everyone" to message the whole group',
+      'To send a <b>private message</b>: click "Everyone" and select one person\'s name',
+      'Press <b>Enter</b> to send'],
+    tips:['A small notification bubble appears on the Chat button when you receive a new message. Click it to read the message!']},
+
+  {id:'rename',cat:'meeting',q:'How do I change my name on Zoom?',lvl:'b',targets:['btn-participants','rename-btn'],
+    text:'You can change how your name appears to everyone during a meeting.',
+    steps:['Click the <b>Participants 👥 button</b>',
+      'The participants panel opens — find <b>your own name</b> in the list',
+      'Hover over your name and click <b>"More"</b>',
+      'Click <b>"Rename"</b>',
+      'Type your new name and click <b>OK</b>',
+      'Your updated name is now visible to everyone in the meeting'],
+    tips:['This is great if you accidentally joined with your email address, device name, or something other than your real name!']},
+
+  {id:'gallery-view',cat:'meeting',q:'How do I see everyone on the screen (Gallery View)?',lvl:'b',targets:['galleryViewBtn','top-view','ph-expand'],
+    text:'Gallery View shows all participants in a grid so you can see everyone at once.',
+    steps:['On desktop: look for the <b>⊞ View button</b> in the top-right area of the Zoom window',
+      'Click it and select <b>Gallery</b> to see everyone in a grid',
+      'Click <b>Speaker</b> to switch back to focusing on the active speaker',
+      'On mobile: tap the <b>⤢ expand button</b> in the top-left of the meeting screen',
+      'If there are more participants than fit on one screen, <b>swipe left or right</b> to see more pages'],
+    tips:['Gallery View is great for group conversations. Speaker View is better for presentations where you want to focus on the presenter.']},
+
+  {id:'spotlight',cat:'meeting',q:'How do I pin or spotlight a speaker?',lvl:'b',targets:['btn-participants'],
+    text:'Pinning keeps someone\'s video large on <em>your</em> screen. Spotlighting makes them large for <em>everyone</em>.',
+    steps:['<b>To Pin (just for you):</b> Right-click on someone\'s video tile → select <b>"Pin Video"</b>',
+      'Their video stays large on your screen — others are not affected',
+      '<b>To Spotlight (everyone sees — hosts only):</b> Right-click on someone\'s video → <b>"Spotlight Video"</b>',
+      'Everyone in the meeting now sees this person enlarged',
+      'To remove: right-click again → "Remove Spotlight" or "Remove Pin"'],
+    tips:['Spotlighting is perfect for featuring the meeting chair or a speaker. Only the host and co-hosts can spotlight for the entire group.']},
+
+  {id:'reactions',cat:'meeting',q:'How do I react with emojis (thumbs up, clap, etc.)?',lvl:'b',targets:['btn-react','ph-reactions-row'],
+    text:'Reactions let you respond to what\'s being said without unmuting and creating noise.',
+    steps:['<b>On desktop:</b> Click the <b>React ❤️ button</b> in the toolbar',
+      'Choose a reaction: 👍 Thumbs Up, 👏 Clap, ❤️ Heart, 😂 Laugh, 😮 Wow, 🎉 Celebrate',
+      'Your emoji briefly appears over your video tile for all to see — then disappears automatically',
+      '<b>On mobile:</b> Tap <b>More (•••)</b> → you\'ll see the reactions row with 🎉 👍 ❤️ and ••• for more'],
+    tips:['Reactions are a wonderful way to show appreciation for a speaker without creating background noise for everyone!']},
+
+  {id:'captions',cat:'meeting',q:'How do I turn on Captions (CC) / live subtitles?',lvl:'b',targets:['top-captions','ph-mg-cc','md-captions'],
+    text:'Captions show live text of what\'s being said at the bottom of the screen — like subtitles on TV.',
+    steps:['<b>On desktop:</b> Click the <b>More (•••)</b> button in the toolbar → click <b>Captions</b>',
+      'Live captions will appear at the bottom of your video area',
+      '<b>On phone/tablet:</b> Tap <b>More (•••)</b> → tap <b>Show CC</b>',
+      'You can also look for the CC button that sometimes appears in the top bar of the meeting window',
+      'To turn off: go back to the same menu and select <b>Hide Captions</b> or <b>Hide CC</b>'],
+    tips:['Captions are incredibly helpful for anyone who is hard of hearing, or when there\'s background noise! The host needs to have this feature enabled in their account settings first.']},
+
+  // ── HOSTING ──
+  {id:'schedule',cat:'host',q:'How do I schedule a Zoom meeting?',lvl:'adv',targets:[],
+    text:'You need a Zoom account (free) to schedule meetings. Here\'s how:',
+    steps:['Open Zoom and sign in to your account',
+      'Click the <b>"New Meeting"</b> or <b>"Schedule"</b> button on the home screen',
+      'Enter a <b>meeting name</b> (e.g., "AA Tuesday Meeting")',
+      'Set the <b>date, time, and duration</b>',
+      'Check <b>"Recurring meeting"</b> if it repeats weekly — same link works every week!',
+      'Click <b>Save</b>',
+      'Copy the invitation link and send it to your participants'],
+    tips:['Recurring meetings are perfect for weekly AA meetings — set it up once and the same link works every session!']},
+
+  {id:'invitation',cat:'host',q:'How do I send an invitation link?',lvl:'adv',targets:[],
+    text:'Share the meeting link so others can join.',
+    steps:['<b>During a meeting:</b> Click <b>Participants 👥</b> → then click <b>"Invite"</b> at the bottom of the panel',
+      'Click <b>"Copy Invite Link"</b> or <b>"Copy Invitation"</b>',
+      'Paste and send it via email, text, or your group\'s communication channel',
+      'The invitation includes the link AND phone dial-in numbers for those without internet',
+      '<b>Before a meeting:</b> Go to zoom.us → sign in → <b>Meetings</b> → click your meeting → <b>Copy Invitation</b>'],
+    tips:['Phone dial-in numbers in the invitation are great for participants who don\'t have a smartphone or reliable internet!']},
+
+  {id:'waiting-room',cat:'host',q:'How do I admit people from the waiting room?',lvl:'adv',targets:['btn-participants','admit-btn'],
+    text:'The waiting room holds participants until the host approves them — great for controlling who enters.',
+    steps:['When someone enters the waiting room, a notification pops up on screen',
+      'Click the <b>Participants 👥 button</b> to open the panel',
+      'You\'ll see a <b>"Waiting Room"</b> section with the person\'s name in yellow/orange',
+      'Click <b>"Admit"</b> to let them into the meeting',
+      'To admit everyone at once: click <b>"Admit All"</b>',
+      'To deny someone: click <b>"Remove"</b> next to their name in the waiting room'],
+    tips:['The waiting room is a helpful privacy tool for AA meetings — you can verify who\'s joining before letting them in.']},
+
+  {id:'mute-participants',cat:'host',q:'How do I mute participants?',lvl:'adv',targets:['btn-participants','mute-ppt-btn','mute-all-btn'],
+    text:'As a host, you can mute one person or everyone at once.',
+    steps:['Click <b>Participants 👥</b> to open the panel',
+      'To mute <b>one person</b>: hover over their name → click <b>"Mute"</b>',
+      'To mute <b>everyone</b>: click <b>"Mute All"</b> at the bottom of the participants panel',
+      'A prompt will ask if participants can unmute themselves — choose your preference'],
+    tips:['You can\'t permanently silence anyone — participants can always unmute themselves. Muting all at the start of a meeting is a great way to begin with a clean, quiet audio environment.']},
+
+  {id:'remove-participant',cat:'host',q:'How do I remove someone from a meeting?',lvl:'adv',targets:['btn-participants','remove-btn'],
+    text:'Hosts can remove disruptive participants from the meeting.',
+    steps:['Click <b>Participants 👥</b>',
+      'Find the person\'s name in the list',
+      'Hover over their name → click <b>"More"</b>',
+      'Click <b>"Remove"</b>',
+      'Confirm by clicking Remove again — they\'ll be disconnected immediately'],
+    warn:'Once removed, a person cannot rejoin unless you specifically allow it in your Host Tools security settings.',
+    tips:['Consider this a last resort — try privately messaging the person first if there\'s an issue.']},
+
+  {id:'make-cohost',cat:'host',q:'How do I make someone a co-host?',lvl:'adv',targets:['btn-participants','cohost-btn'],
+    text:'Co-hosts can help manage the meeting — admit people, mute, manage breakout rooms, and more.',
+    steps:['Click <b>Participants 👥</b>',
+      'Find the person you want to make co-host',
+      'Hover over their name → click <b>"More"</b>',
+      'Click <b>"Make Co-Host"</b>',
+      'They receive a notification and now have most host abilities'],
+    tips:['For AA meetings, having a co-host is a great idea — one person chairs the meeting while the other handles the tech (admitting, muting, etc.)']},
+
+  {id:'host-tools',cat:'host',q:'What is the Host Tools button and what does it do?',lvl:'adv',targets:['btn-hosttools','ph-mg-hosttools'],
+    text:'Host Tools (formerly called Security) is where hosts control who can do what in the meeting.',
+    steps:['Click the <b>Host Tools 🛡️ button</b> in the toolbar (desktop) or in the More panel (mobile)',
+      'A panel opens on the right side with all host controls organized in categories',
+      '<b>Security settings:</b> Lock the meeting, enable/disable the waiting room, remove participants',
+      '<b>Participant controls:</b> Allow/restrict participants from sharing screen, chatting, renaming themselves',
+      '<b>Breakout Rooms:</b> Create and manage breakout rooms from within this panel',
+      '<b>Focus Mode:</b> Restrict what participants can see — only the host sees everyone\'s video'],
+    tips:['The Host Tools panel replaces the old separate Security and Breakout Rooms buttons — everything is now in one organized place!']},
+
+  {id:'breakout',cat:'host',q:'How do I create and manage Breakout Rooms?',lvl:'adv',targets:['btn-hosttools','ph-mg-hosttools'],
+    text:'Breakout rooms split participants into smaller groups for discussion. Access them via Host Tools.',
+    steps:['Click the <b>Host Tools 🛡️ button</b> in the toolbar',
+      'In the Host Tools panel, look for <b>Breakout Rooms</b>',
+      'Click <b>Create Rooms</b> and choose how many rooms you want',
+      'Select <b>"Automatically"</b> to let Zoom assign people randomly, or <b>"Manually"</b> to choose yourself',
+      'Click <b>"Open All Rooms"</b> to send everyone to their room',
+      'You can broadcast a message to all rooms, or visit any room yourself to check in',
+      'Click <b>"End Breakout Rooms"</b> to bring everyone back to the main session'],
+    tips:['Set a timer so rooms close automatically after a set time — participants will get a 60-second warning before being brought back.']},
+
+  // ── SCREEN SHARING ──
+  {id:'share-screen',cat:'share',q:'How do I share my screen?',lvl:'b',targets:['btn-share','ph-mg-share'],
+    text:'Screen sharing lets everyone see what\'s on your computer or phone screen.',
+    steps:['Click the <b>Share ⬆️ button</b> in the toolbar (green on desktop)',
+      'A window appears showing your screen, open windows, and apps',
+      'Click your <b>whole screen</b> or a <b>specific window</b> to share just that',
+      'Click the green <b>"Share"</b> button to start',
+      'A green border appears around what you\'re sharing',
+      'To stop: click the red <b>"Stop Share"</b> button that appears at the top of your screen'],
+    tips:['Open the document or website you want to show <em>before</em> clicking Share — that way it\'s ready to select!']},
+
+  {id:'share-ppt',cat:'share',q:'How do I share a PowerPoint or document?',lvl:'b',targets:['btn-share','ph-mg-share'],
+    text:'Open the file first, then share just that window — not your whole screen.',
+    steps:['Open your PowerPoint or document <b>before</b> clicking Share',
+      'Click <b>Share ⬆️</b>',
+      'In the sharing menu, click on the <b>PowerPoint window</b> (not "Desktop" or "Screen")',
+      'Click <b>"Share"</b>',
+      'Only the presentation is visible to others — not your whole desktop'],
+    tips:['Sharing just the window (not your whole desktop) is safer — participants won\'t accidentally see your email, files, or other apps!']},
+
+  {id:'share-sound',cat:'share',q:'How do I share sound from my computer?',lvl:'adv',targets:['btn-share'],
+    text:'When sharing a screen, you can share computer audio too so participants hear videos or music.',
+    steps:['Click <b>Share ⬆️</b>',
+      'At the bottom of the sharing menu, check <b>"Share sound"</b>',
+      'Now select what to share and click <b>Share</b>',
+      'Everyone in the meeting will hear the audio from your computer'],
+    tips:['Always check "Share sound" if you\'re playing a video — otherwise participants will see the video but hear complete silence!']},
+
+  {id:'stop-share',cat:'share',q:'How do I stop sharing my screen?',lvl:'b',targets:['btn-share'],
+    text:'Look for the stop button at the top of your screen when sharing.',
+    steps:['When sharing, a <b>red/orange floating toolbar</b> appears at the very top of your screen',
+      'Click the red <b>"Stop Share"</b> button',
+      'OR: click the <b>Share button</b> in the toolbar again — it will now say "Stop Share"'],
+    tips:['If you can\'t find the toolbar, move your mouse all the way to the top-center of your screen — it will reappear!']},
+
+  {id:'cant-share',cat:'share',q:'Why can\'t I share my screen?',lvl:'adv',targets:['btn-hosttools'],
+    text:'Usually the host has restricted screen sharing, or there\'s a permissions issue.',
+    steps:['Check with the <b>host</b> — they may need to allow participants to share screens',
+      'The host can go to: <b>Host Tools 🛡️ → Participant Controls → Allow Share Screen</b>',
+      '<b>On Mac:</b> Apple menu → System Settings → Privacy & Security → Screen Recording → enable Zoom',
+      '<b>On Windows:</b> fully close and restart Zoom, then try again',
+      'Only one person can share at a time — wait for the current share to stop'],
+    tips:['Note: The old "Security" button is now called <b>Host Tools</b> in Zoom v6.7 and newer. Same features, new name!']},
+
+  // ── RECORDING ──
+  {id:'record',cat:'record',q:'How do I record a meeting?',lvl:'adv',targets:['btn-record','ph-mg-record'],
+    text:'Hosts and co-hosts can record. Always let participants know they\'re being recorded!',
+    steps:['Click the <b>Record ⏺️ button</b> in the toolbar (desktop) or in the <b>More panel</b> (mobile)',
+      'Choose <b>"Record on this Computer"</b> — saves a video file to your hard drive (free)',
+      'OR <b>"Record to the Cloud"</b> — saves online with a shareable link (requires a paid Zoom plan)',
+      'A red <b>"Recording…"</b> indicator appears at the top of everyone\'s screen',
+      'To pause: click <b>"Pause"</b>. To stop: click <b>"Stop Recording"</b>',
+      'When the meeting ends, Zoom processes and saves the file automatically'],
+    warn:'Always inform participants before recording — it\'s both respectful and legally required in most places. For AA meetings, please check with your group\'s guidelines before recording.',
+    tips:['If you forget to record, there\'s no way to recover a meeting after it ends. Consider clicking Record right at the start as a habit!']},
+
+  {id:'record-where',cat:'record',q:'Where does the recording save?',lvl:'adv',targets:[],
+    text:'Local recordings save automatically to a Zoom folder on your computer.',
+    steps:['After the meeting ends, Zoom converts the recording — this takes a minute or two',
+      'Local recordings save to: <b>Documents → Zoom</b> (a folder Zoom creates automatically)',
+      'Each recording gets its own subfolder named with the date and meeting title',
+      'To find it: open Zoom → click <b>Recordings</b> in the left navigation → click <b>"Open"</b>',
+      'Cloud recordings: sign in at zoom.us → click <b>"Recordings"</b> in the left menu'],
+    tips:['Local recordings are MP4 video files — you can play them with any video player, share by email, or upload to YouTube.']},
+
+  {id:'participant-record',cat:'record',q:'Can participants record the meeting?',lvl:'adv',targets:['btn-record'],
+    text:'Not by default — only the host controls who is allowed to record.',
+    steps:['By default, only the host and co-hosts can record',
+      'To allow a specific participant to record: open <b>Participants 👥</b>',
+      'Hover over their name → click <b>"More"</b> → <b>"Allow to Record"</b>',
+      'They can now use the Record button',
+      'Revoke anytime by going back to More → "Disallow Record"'],
+    tips:['For AA meetings, it\'s often best to keep recording off to protect participants\' anonymity and privacy. Consult your group\'s guidelines.']},
+
+  {id:'share-recording',cat:'record',q:'How do I share a recording?',lvl:'adv',targets:[],
+    text:'Share local recordings as video files, or cloud recordings as a link.',
+    steps:['<b>Local recording:</b> Find the MP4 file in Documents → Zoom',
+      'Upload to Google Drive or Dropbox and share that link, or email the file as an attachment',
+      '<b>Cloud recording:</b> Go to zoom.us → Recordings → click on the recording → click <b>"Share"</b>',
+      'Copy the link and send it to participants',
+      'You can set a password on cloud recording links for added privacy'],
+    tips:['Cloud recordings are easiest to share — just send a link. But they require a paid Zoom plan to store.']},
+
+  // ── TROUBLESHOOTING ──
+  {id:'frozen',cat:'trouble',q:'Why is my video frozen?',lvl:'b',targets:['btn-video','mbtn-video'],
+    text:'Frozen video is almost always caused by a slow internet connection.',
+    steps:['Try <b>turning your camera off then back on</b> (click the Video button twice)',
+      'Move <b>closer to your Wi-Fi router</b> if you can',
+      'Close other apps or browser tabs that use the internet',
+      'Ask others if THEY see your video as frozen — it might look fine on your end but not theirs',
+      'Leave the meeting and rejoin from the same link',
+      'As a last resort, restart your device'],
+    tips:['Turning your camera OFF actually helps everyone when the internet is slow — audio uses far less data than video.']},
+
+  {id:'lagging',cat:'trouble',q:'Why is Zoom slow or lagging?',lvl:'b',targets:[],
+    text:'Lag is almost always caused by slow or congested internet.',
+    steps:['Turn off your <b>camera 📹</b> — video uses the most internet data',
+      'Move <b>closer to your Wi-Fi router</b> or connect with an ethernet cable if available',
+      'Close streaming apps like Netflix, YouTube, or Spotify on ALL devices in your home',
+      'Ask family members to reduce their internet use during the meeting',
+      'Leave the meeting and rejoin to reset your connection'],
+    tips:['Audio-only Zoom uses roughly 10x less internet than video. Turning off your camera is the single most effective thing you can do when experiencing lag.']},
+
+  {id:'kicked-out',cat:'trouble',q:'Why did I get kicked out of a meeting?',lvl:'b',targets:[],
+    text:'A few common reasons — here\'s how to tell what happened.',
+    steps:['<b>Lost internet connection</b> — most common. Check your Wi-Fi and click the meeting link again to rejoin',
+      '<b>Host ended the meeting</b> — everyone is disconnected when the host clicks "End Meeting for All"',
+      '<b>Host removed you</b> — you\'ll see a message saying you were removed',
+      '<b>Zoom crashed or updated</b> — rare but possible. Restart Zoom and rejoin.'],
+    tips:['Always save the original meeting link or write down the Meeting ID and Passcode — that way you can rejoin quickly if disconnected!']},
+
+  {id:'update-zoom',cat:'trouble',q:'How do I update Zoom?',lvl:'b',targets:[],
+    text:'Keeping Zoom up to date prevents problems and gives you the latest features.',
+    steps:['<b>On computer:</b> Open Zoom → click your <b>profile picture</b> (top-right corner)',
+      'Click <b>"Check for Updates"</b>',
+      'If an update is available, click <b>"Update"</b> — takes just a minute or two',
+      '<b>On iPhone/iPad:</b> Open the App Store → search "Zoom" → tap <b>"Update"</b> if available',
+      '<b>On Android:</b> Open Google Play Store → search "Zoom" → tap <b>"Update"</b> if available',
+      'The current version is <b>Zoom Workplace 6.7</b> (released December 2025)'],
+    tips:['Zoom often updates itself automatically in the background. But if you\'re having problems, manually checking for updates is one of the first things to try!']},
+
+  {id:'camera-broken',cat:'trouble',q:'Why doesn\'t my camera work in Zoom?',lvl:'b',targets:['btn-video','mbtn-video'],
+    text:'Camera issues are usually a permissions or settings problem.',
+    steps:['Click the <b>▲ arrow</b> next to the Video button and select your camera from the list',
+      'Make sure no other app is using your camera (close FaceTime, Teams, Skype, etc.)',
+      '<b>On Mac:</b> System Settings → Privacy & Security → Camera → make sure Zoom is enabled',
+      '<b>On Windows:</b> Settings → Privacy & Security → Camera → scroll down and enable Zoom',
+      '<b>On iPhone/Android:</b> Phone Settings → Zoom → turn on Camera permission',
+      'Fully quit and reopen Zoom, then try again'],
+    tips:['The most common cause: another video app (like FaceTime or Teams) has taken control of the camera. Close all other video apps and try again.']},
+
+  // ── COMMON CONCERNS ──
+  {id:'camera-off-visible',cat:'concerns',q:'Can people see me if my camera is off?',lvl:'b',targets:['btn-video','mbtn-video','ph-self'],
+    text:'No! When your camera is off, nobody can see you at all.',
+    steps:['Camera OFF (🚫 red line) → others see your <b>name, profile photo, or a blank tile</b> — NOT your face',
+      'Camera ON (✅ no red line) → your live video is visible to everyone',
+      'You can still see and hear other people perfectly even when your own camera is off'],
+    tips:['It\'s completely normal and common to join with your camera off. Many people prefer it, especially on phones or when not feeling camera-ready!']},
+
+  {id:'muted-audible',cat:'concerns',q:'Can people hear me if I\'m muted?',lvl:'b',targets:['btn-mute','mbtn-mute'],
+    text:'No! When muted, absolutely no sound from you is transmitted — not your voice, not background noise.',
+    steps:['Muted (🔇 red line through mic) = complete silence from your end',
+      'Not even coughing, sneezing, dogs barking, or TV is heard',
+      'Unmuted (🎙️ no red line) = everyone CAN hear you',
+      'To speak while muted: click the mic button OR hold the spacebar'],
+    shortcut:{key:'Spacebar (hold)',desc:'Hold spacebar → temporarily unmuted. Release → muted again. No clicking needed!'},
+    tips:['Keep yourself muted when not speaking — it makes the meeting much more pleasant for everyone!']},
+
+  {id:'leave-meeting',cat:'concerns',q:'How do I leave a meeting?',lvl:'b',targets:['btn-leave','mbtn-leave'],
+    text:'Look for the End/Leave button — it\'s red, at the far right of the toolbar.',
+    steps:['Click the red <b>End button ✕</b> in the bottom-right of the toolbar',
+      'A menu appears: click <b>"Leave Meeting"</b> to leave (the meeting continues for everyone else)',
+      '<b>If you are the Host:</b> You\'ll also see <b>"End Meeting for All"</b> — only choose this if you want to close the entire meeting for everyone',
+      'If you\'re the host and want to leave but keep the meeting running: click <b>"Leave Meeting"</b> → Zoom will ask you to assign a new host first'],
+    tips:['Closing the Zoom window with the X button also leaves the meeting — you\'ll be asked to confirm.']},
+
+  {id:'join-late',cat:'concerns',q:'What happens if I join late?',lvl:'b',targets:[],
+    text:'Joining late is totally fine and easy to do!',
+    steps:['Click the meeting link at any time — even if the meeting has been going for an hour',
+      'You may enter a <b>waiting room</b> briefly while the host admits you',
+      'Once inside, your camera and microphone are off by default — you decide when to turn them on',
+      'You join the meeting wherever everyone is at that moment',
+      'Nobody needs to pause or recap — just slip in quietly and get comfortable'],
+    tips:['Don\'t stress about joining a few minutes late — it happens to everyone. Just join quietly and you\'ll be participating in no time!']},
+
+  {id:'wifi-data',cat:'concerns',q:'Do I need Wi-Fi or can I use cellular data?',lvl:'b',targets:[],
+    text:'Both work! Wi-Fi is better when you have access to it.',
+    steps:['<b>Wi-Fi is preferred</b> — more stable, faster, and doesn\'t use your phone\'s data plan',
+      '<b>Cellular data (4G/5G) works too</b> — but a 1-hour video call can use 300MB–1GB of data',
+      'To save data on cellular: turn off your camera — audio-only uses roughly 10x less data',
+      '<b>Phone dial-in option:</b> Most meeting invitations include a regular phone number you can call. No internet needed at all!'],
+    tips:['If your data plan is limited, turn off your camera and just use audio. You can still hear and speak fully — without using much data at all!']},
+
+  // ── NEW FEATURES ──
+  {id:'ai-companion',cat:'meeting',q:'What is the AI Companion (✨ sparkle button)?',lvl:'b',targets:['btn-ai','ph-ai-icon'],
+    text:'AI Companion is Zoom\'s built-in AI assistant that can help you catch up, summarize the meeting, and answer questions.',
+    steps:['Look for the <b>✨ sparkle icon</b> in the toolbar (desktop) or top bar (mobile)',
+      'Click it to open the AI Companion panel',
+      'You can ask questions like: <b>"Catch me up"</b> (if you joined late), <b>"Was my name mentioned?"</b>, or <b>"What are the action items?"</b>',
+      'Your private conversation with AI Companion is NOT visible to the host or other participants',
+      'The host can also use it to generate an automatic meeting summary'],
+    info:'AI Companion is only available if the host has enabled it for the account. You\'ll see a blinking ✨ sparkle if it\'s active.',
+    tips:['AI Companion is especially useful for joining late — just ask "Catch me up" and it will summarize what you missed!']},
+
+  {id:'notes',cat:'meeting',q:'How do I use Notes during a meeting?',lvl:'b',targets:['btn-more','md-notes','ph-mg-notes'],
+    text:'Notes lets you take private notes during the meeting that only you can see.',
+    steps:['<b>On desktop:</b> Click the <b>More (•••) button</b> → click <b>Notes</b>',
+      'A notes panel opens on the right — type anything you want to remember',
+      '<b>On mobile:</b> Tap <b>More (•••)</b> → tap <b>Notes</b>',
+      'Your notes are private — other participants cannot see them',
+      'After the meeting, you can access and save your notes from your Zoom account'],
+    tips:['Notes are great for writing down action items, questions you want to ask, or key things said during the meeting!']},
+
+  {id:'meeting-info',cat:'meeting',q:'Where do I find the Meeting ID and passcode?',lvl:'b',targets:['btn-more','md-meetinginfo','ph-mg-meetinginfo'],
+    text:'The Meeting Info shows the Meeting ID, passcode, and invitation link — useful for sharing or if someone needs to dial in.',
+    steps:['<b>On desktop:</b> Click the <b>More (•••) button</b> → click <b>Meeting info</b>',
+      'A small panel shows the Meeting ID, passcode, host name, and participant link',
+      '<b>On mobile:</b> Tap <b>More (•••)</b> → tap <b>Meeting info</b>',
+      'You can copy the invitation from here to share with someone who missed the original link'],
+    tips:['If someone calls you asking "how do I join?" — use Meeting Info to quickly find and share the details!']},
+
+  // ── TECH DIFFICULTIES ──
+  {id:'tech-no-sound',cat:'tech',q:'No sound at all — I can\'t hear anyone',lvl:'b',targets:['btn-mute','mbtn-mute'],
+    text:'This is the most common issue in Zoom meetings. Work through these steps one at a time.',
+    steps:[
+      '<b>Step 1 — Check device volume:</b> Look at your keyboard or phone side buttons. Press the volume UP button several times. Make sure it\'s not on silent/vibrate mode.',
+      '<b>Step 2 — Check Zoom audio connection:</b> Look at the bottom-left of Zoom. Do you see a phone icon with a red X? Click it and select <b>"Join with Computer Audio"</b>.',
+      '<b>Step 3 — Wrong speaker selected:</b> On desktop, click the <b>▲ arrow</b> next to the Audio button → select the correct speaker. If headphones are plugged in, make sure they\'re selected.',
+      '<b>Step 4 — Leave and rejoin:</b> Click <b>Leave</b>, then click the meeting link again. When prompted, click <b>"Join with Computer Audio"</b>.',
+      '<b>Step 5 — Restart Zoom:</b> Completely close the Zoom app and reopen it, then rejoin the meeting.'],
+    warn:'If you joined by clicking a phone dial-in number instead of the app link, your audio is through your regular phone — the Zoom app buttons won\'t control it.',
+    tips:['Quick test: can you hear YouTube or music on your device? If yes, your speakers are fine and the issue is inside Zoom. If no, your device volume or speakers are the problem.']},
+
+  {id:'tech-no-mic',cat:'tech',q:'People can\'t hear me — my microphone isn\'t working',lvl:'b',targets:['btn-mute','mbtn-mute'],
+    text:'Three quick things to check first, in order.',
+    steps:[
+      '<b>Check #1 — Are you muted?</b> Look at the mic icon 🎙️ in the bottom-left. If there\'s a red line through it, click it to unmute.',
+      '<b>Check #2 — Is the right mic selected?</b> Click the <b>▲ arrow</b> next to the Audio button. If you have earbuds, headphones, or an external mic plugged in, select that device from the list.',
+      '<b>Check #3 — Does Zoom have microphone permission?</b> iPhone: Settings → Zoom → turn on Microphone. Android: Settings → Apps → Zoom → Permissions → Microphone. Mac: System Settings → Privacy & Security → Microphone → enable Zoom. Windows: Settings → Privacy → Microphone → enable Zoom.',
+      '<b>Check #4 — Test it:</b> Click the ▲ arrow next to Audio → <b>"Test Speaker & Microphone"</b>. Speak and watch for the green bar to move.',
+      '<b>Still not working:</b> Completely close Zoom and reopen it. Another app (Teams, FaceTime, Skype) may have locked the microphone — close them all first.'],
+    tips:['Type "Can you hear me?" in the Chat 💬 while you troubleshoot — you\'ll know the moment it\'s fixed without anyone having to guess!']},
+
+  {id:'tech-echo',cat:'tech',q:'There is an echo or feedback noise in the meeting',lvl:'b',targets:['btn-mute','mbtn-mute'],
+    text:'Echo happens when sound from speakers goes back into someone\'s microphone. Here\'s how to find and fix it.',
+    steps:[
+      '<b>Identify who\'s causing it:</b> The host should watch the Participants list. The person causing echo usually has a constantly-moving mic indicator even when not speaking.',
+      '<b>Fix #1 — Use headphones or earbuds:</b> The person causing the echo should plug in any headphones or earbuds. This is the single best fix — it stops speaker sound from reaching the mic.',
+      '<b>Fix #2 — Lower your speaker volume:</b> Turn your device volume down so sound from the meeting doesn\'t bleed into your microphone.',
+      '<b>Fix #3 — Mute when not speaking:</b> If echo continues, the person causing it should keep themselves muted whenever they\'re not actively talking.',
+      '<b>Fix #4 — Two devices in the same room:</b> If two people in the same room are both on Zoom, one MUST mute and turn off their speakers, or use headphones. Two active microphones in the same room always cause echo.'],
+    tips:['The host can quickly mute everyone (Mute All in Participants) and then unmute people one at a time to find who is causing the echo.']},
+
+  {id:'tech-frozen-video',cat:'tech',q:'My video is frozen, pixelated, or blurry',lvl:'b',targets:['btn-video','mbtn-video'],
+    text:'Frozen or blurry video almost always means your internet connection is struggling.',
+    steps:[
+      '<b>Fix #1 — Turn your camera off:</b> Click the Video button 📹 to turn your camera OFF. This immediately reduces the load on your internet and often fixes audio lag too. You can still participate by voice.',
+      '<b>Fix #2 — Move closer to Wi-Fi:</b> Move closer to your router. Walls and floors weaken Wi-Fi signals significantly.',
+      '<b>Fix #3 — Reduce competition for bandwidth:</b> Ask others at home to pause Netflix, YouTube, gaming, or large downloads during your meeting.',
+      '<b>Fix #4 — Switch networks:</b> If on Wi-Fi, try switching your phone to cellular data (4G/5G). On a laptop, try using your phone as a hotspot.',
+      '<b>Fix #5 — Leave and rejoin:</b> Leave the meeting and click the link again to reset your connection.'],
+    tips:['Turning your camera off is NOT rude — it\'s smart and very common. Just say "I\'m having connection issues so turning off my camera" and everyone will understand. Audio-only uses ~10x less internet than video.']},
+
+  {id:'tech-zoom-crash',cat:'tech',q:'Zoom crashed or froze completely — how do I get back in?',lvl:'b',targets:[],
+    text:'Don\'t panic — you can get back into the meeting quickly.',
+    steps:[
+      '<b>Step 1 — Force close Zoom:</b> Windows: press <b>Ctrl + Alt + Delete</b> → Task Manager → Zoom → End Task. Mac: press <b>⌘ + Option + Escape</b> → Zoom → Force Quit. iPhone/Android: swipe up from the bottom and swipe Zoom off the screen.',
+      '<b>Step 2 — Wait 10–15 seconds</b> before reopening.',
+      '<b>Step 3 — Reopen Zoom</b> and click the original meeting link again, or open Zoom and look for the meeting under "Recent".',
+      '<b>Step 4 — If it keeps crashing:</b> Restart your whole device. This clears memory and fixes most persistent crashes.',
+      '<b>Step 5 — Update Zoom:</b> Outdated versions crash more often. Click your profile picture → Check for Updates.'],
+    tips:['Keep the original meeting link saved in a text message or written down so you can always get back in quickly after a crash.']},
+
+  {id:'tech-disconnecting',cat:'tech',q:'I keep getting disconnected from the meeting',lvl:'b',targets:[],
+    text:'Frequent disconnections mean your internet is unstable. Here\'s how to stabilize it.',
+    steps:[
+      '<b>Fix #1 — Move closer to your Wi-Fi router.</b> Distance and walls are the #1 cause of unstable Wi-Fi.',
+      '<b>Fix #2 — Turn your camera OFF.</b> This dramatically reduces data usage and helps keep the connection stable.',
+      '<b>Fix #3 — Restart your router:</b> Unplug it from the wall, wait 30 seconds, plug back in. Wait 2 minutes. This fixes many unstable connections.',
+      '<b>Fix #4 — Use cellular data instead:</b> On a phone, turn off Wi-Fi and use 4G/5G. It\'s often more stable than a weak Wi-Fi signal.',
+      '<b>Fix #5 — Ask others at home to pause streaming</b> during your meeting to free up bandwidth.',
+      '<b>Fix #6 — Call in by phone:</b> The invitation has a dial-in phone number. Call it with a regular phone call — no internet needed, voice still goes through to everyone.'],
+    tips:['Save the meeting phone dial-in number from the invitation BEFORE the meeting. If your internet fails completely, you can still call in and participate by voice!']},
+
+  {id:'tech-cant-join',cat:'tech',q:'I can\'t join the meeting — the link isn\'t working',lvl:'b',targets:[],
+    text:'A non-working link usually has a simple explanation. Work through these checks.',
+    steps:[
+      '<b>Check #1 — Is Zoom installed?</b> If clicking the link opens a browser but nothing happens, install Zoom from zoom.us/download or your app store, then try the link again.',
+      '<b>Check #2 — Has the meeting started?</b> If you see "The meeting has not started," the host hasn\'t opened it yet. Wait a few minutes and try again.',
+      '<b>Check #3 — Try entering manually:</b> Open Zoom → click <b>Join</b> → type the Meeting ID → enter the passcode. Get both from the invitation email or text.',
+      '<b>Check #4 — Is the meeting locked?</b> The host may have locked the meeting. Contact them and ask to be let in.',
+      '<b>Check #5 — Try a different browser:</b> Copy the link and paste it into Google Chrome.',
+      '<b>Check #6 — Update Zoom:</b> Profile picture → Check for Updates.'],
+    tips:['Make sure you\'re using the FULL link — sometimes links get broken when copied across multiple emails or texts and parts get cut off.']},
+
+  {id:'tech-black-screen',cat:'tech',q:'I see a black screen or blank video',lvl:'b',targets:['btn-video','mbtn-video'],
+    text:'A black screen when someone\'s camera is supposedly on usually means a camera conflict.',
+    steps:[
+      '<b>Fix #1 — Toggle your camera:</b> Click Video to turn camera OFF, wait 2 seconds, then turn it back ON.',
+      '<b>Fix #2 — Close other video apps:</b> FaceTime, Teams, Skype, and Google Meet all lock the camera. Close all of them completely — only one app can use the camera at a time.',
+      '<b>Fix #3 — Select the right camera:</b> Click the <b>▲ arrow</b> next to Video → try selecting a different camera, or reselect the same one.',
+      '<b>Fix #4 — Check camera permissions:</b> Your device may have blocked Zoom from the camera. See "Why doesn\'t my camera work in Zoom?" in Troubleshooting.',
+      '<b>Fix #5 — Restart Zoom completely</b> — fully close it (don\'t just minimize) and reopen.',
+      '<b>Fix #6 — Restart your device</b> — clears driver conflicts that cause persistent black screens.'],
+    tips:['On Windows laptops, check for a physical camera privacy shutter — a small sliding cover over the camera lens. Make sure it\'s slid open!']},
+
+  {id:'tech-slow-laptop',cat:'tech',q:'Zoom is making my computer very slow or hot',lvl:'b',targets:['btn-video','mbtn-video'],
+    text:'Video calling is demanding on computers, especially older ones. Lighten the load with these steps.',
+    steps:[
+      '<b>Fix #1 — Turn off your camera:</b> Video processing uses the most CPU power. Turning camera off provides immediate relief.',
+      '<b>Fix #2 — Close everything else:</b> Close browser tabs, email, Word, and any other open apps before or during the meeting.',
+      '<b>Fix #3 — Turn off video effects:</b> Click the ▲ arrow next to Video → Video Settings → uncheck <b>"Enable HD video"</b> and turn off any virtual background or blur effect.',
+      '<b>Fix #4 — Plug in your charger:</b> If on battery, plug in. Laptops reduce performance to save battery power.',
+      '<b>Fix #5 — Update Zoom:</b> Newer versions are more efficient. Profile picture → Check for Updates.',
+      '<b>Fix #6 — Restart before the meeting:</b> A fresh restart clears memory and gives Zoom the best performance.'],
+    tips:['Older computers (5+ years) may genuinely struggle with video calls. Turning camera off is a completely acceptable solution — you can fully participate by voice.']},
+
+  {id:'tech-wrong-name',cat:'tech',q:'My name shows wrong / I\'m signed into the wrong account',lvl:'b',targets:[],
+    text:'Easy to fix — either rename yourself for just this meeting, or sign into the right account.',
+    steps:[
+      '<b>Quick fix (rename just for this meeting):</b> Click <b>Participants 👥</b> → hover your own name → click <b>More</b> → click <b>Rename</b> → type your name → OK.',
+      '<b>To fix the account permanently:</b> Click your <b>profile picture</b> (top-right of Zoom) → scroll down → click <b>"Sign Out"</b>.',
+      'Click <b>"Sign In"</b> and enter the correct email and password.',
+      '<b>If you don\'t need an account at all</b> (just joining meetings): Sign out, then just click the meeting link and type your name when prompted — no account needed to join.',
+      '<b>Family member signed in on your device?</b> Sign them out (profile picture → Sign Out) and then either sign into your own account, or join meetings without signing in.'],
+    tips:['You can rename yourself at any point during a meeting without leaving — the new name shows immediately to everyone.']},
+];
+
+// ════════════════════════════════════════════════════════
+// CATEGORY CONFIG
+// ════════════════════════════════════════════════════════
+const CATS = {
+  start:    {name:'Getting Started', icon:'🚀', open:true},
+  av:       {name:'Audio & Video',   icon:'🎙️', open:true},
+  meeting:  {name:'During a Meeting',icon:'🙋', open:true},
+  host:     {name:'Hosting',         icon:'👑', open:false},
+  share:    {name:'Screen Sharing',  icon:'📤', open:false},
+  record:   {name:'Recording',       icon:'⏺️', open:false},
+  trouble:  {name:'Troubleshooting', icon:'🔧', open:false},
+  tech:     {name:'Tech Difficulties',icon:'🆘', open:false},
+  concerns: {name:'Common Concerns', icon:'💡', open:false},
+};
+
+// Button ID → FAQ ID map
+const BTN_MAP = {
+  mute:'mute', video:'camera', participants:'raise-hand', chat:'chat',
+  share:'share-screen', record:'record', react:'reactions', leave:'leave-meeting',
+  'host-tools':'host-tools', 'ai-companion':'ai-companion', apps:'apps',
+  'gallery-view':'gallery-view', spotlight:'spotlight', rename:'rename',
+  'waiting-room':'waiting-room', 'mute-participants':'mute-participants',
+  'remove-participant':'remove-participant', 'make-cohost':'make-cohost',
+  'mute-all':'mute-participants', 'participant-video':'camera-off-visible',
+  'camera-off':'camera-off-visible', reactions:'reactions',
+  'raise-hand':'raise-hand','lower-hand':'raise-hand',
+  captions:'captions', notes:'notes', 'meeting-info':'meeting-info',
+  docs:'notes', whiteboard:'share-ppt', transfer:'meeting-info',
+  security:'host-tools', 'cant-hear-others':'cant-hear-others',
+  'test-av':'test-av', 'md-record':'record',
+};
+
+const PANEL_IDS = new Set(['admit-btn','mute-ppt-btn','remove-btn','cohost-btn','rename-btn','mute-all-btn','lower-hand-btn']);
+
+let curUI='desktop', curQ=null, isBeginnerMode=true, moreOpen=false, mobileMoreOpen=false;
+
+// ════════════════════════════════════════════════════════
+// BUILD SIDEBAR
+// ════════════════════════════════════════════════════════
+function buildFAQ(){
+  const container=document.getElementById('faqList');
+  const grouped={};
+  FAQ.forEach(q=>{ (grouped[q.cat]=grouped[q.cat]||[]).push(q); });
+  Object.entries(CATS).forEach(([k,m])=>{
+    const qs=grouped[k]||[];
+    const sec=document.createElement('div');
+    sec.className='cat-section'; sec.dataset.cat=k;
+    const hdr=document.createElement('div');
+    hdr.className='cat-hdr'+(m.open?' open':'');
+    hdr.innerHTML=`<span class="cat-icon">${m.icon}</span><span class="cat-name">${m.name}</span><span class="cat-count">${qs.length}</span><span class="cat-chev">▼</span>`;
+    const list=document.createElement('div');
+    list.className='q-list'+(m.open?' open':'');
+    hdr.onclick=()=>{ hdr.classList.toggle('open'); list.classList.toggle('open'); };
+    qs.forEach(q=>{
+      const item=document.createElement('div');
+      item.className='q-item'+(q.lvl==='adv'?' adv-only':'');
+      item.dataset.id=q.id; item.dataset.lvl=q.lvl;
+      item.innerHTML=q.q+(q.lvl==='adv'?'<span class="adv-badge">Host</span>':'');
+      item.onclick=()=>selectQ(q.id);
+      list.appendChild(item);
+    });
+    sec.appendChild(hdr); sec.appendChild(list); container.appendChild(sec);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+// SELECT QUESTION
+// ════════════════════════════════════════════════════════
+function selectQNoToggle(id){ _doSelectQ(id); } // used internally without side effects
+
+function selectQ(id){
+  // If search is active, clear it first so the item becomes visible in the list
+  const searchEl=document.getElementById('searchIn');
+  if(searchEl && searchEl.value){
+    searchEl.value='';
+    filterQ('');
+  }
+  _doSelectQ(id);
+}
+
+function _doSelectQ(id){
+  const q=FAQ.find(x=>x.id===id); if(!q) return;
+  curQ=id;
+  document.querySelectorAll('.q-item').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+  const sec=document.querySelector(`.cat-section[data-cat="${q.cat}"]`);
+  if(sec){ sec.querySelector('.cat-hdr').classList.add('open'); sec.querySelector('.q-list').classList.add('open'); }
+  clearHL();
+  closeMoreMenu(); closeMobileMore(); closeMobileParticipants();
+  // Highlight targets
+  q.targets.forEach(t=>hl(t));
+  // Participants panel
+  const needPanel=q.targets.some(t=>PANEL_IDS.has(t));
+  const pp=document.getElementById('zPP');
+  if(needPanel||q.targets.includes('btn-participants')){
+    pp.classList.add('show'); ppOpen=true;
+  } else {
+    pp.classList.remove('show'); ppOpen=false;
+  }
+  // Special: More dropdown items
+  const moreTargets=['md-captions','md-notes','md-docs','md-whiteboard','md-meetinginfo'];
+  if(q.targets.some(t=>moreTargets.includes(t)||t.startsWith('md-'))){
+    openMoreMenu(); q.targets.filter(t=>t.startsWith('md-')).forEach(t=>hl(t));
+  }
+  // Mobile more sheet items
+  const mobileMoreTargets=['ph-raise-hand','ph-mg-participants','ph-mg-share','ph-mg-record','ph-mg-cc','ph-mg-notes','ph-mg-apps','ph-mg-meetinginfo','ph-mg-hosttools'];
+  if(curUI==='mobile'&&q.targets.some(t=>mobileMoreTargets.includes(t))){ openMobileMore(); }
+  document.getElementById('welcomeBar').style.display='none';
+  showAnswer(q);
+  setTimeout(()=>{ const a=document.querySelector('.q-item.active'); if(a) a.scrollIntoView({behavior:'smooth',block:'nearest'}); },150);
+}
+
+function hl(id){ const el=document.getElementById(id); if(el) el.classList.add('highlighted'); }
+function clearHL(){ document.querySelectorAll('.highlighted').forEach(el=>el.classList.remove('highlighted')); }
+
+// ════════════════════════════════════════════════════════
+// SHOW ANSWER
+// ════════════════════════════════════════════════════════
+function showAnswer(q){
+  const ph=document.getElementById('apPlaceholder');
+  const ct=document.getElementById('apContent');
+  ph.style.display='none'; ct.classList.remove('show');
+  const m=CATS[q.cat];
+  let html=`
+    <div class="ap-hdr">
+      <div class="ap-cat">${m.icon} ${m.name}</div>
+      <div class="ap-q">${q.q}</div>
+    </div>
+    <div class="ap-text">${q.text}</div>`;
+  if(q.steps?.length){
+    html+=`<div class="steps"><div class="steps-lbl">📋 Step by Step</div>`;
+    q.steps.forEach((s,i)=>{ html+=`<div class="step"><div class="step-n">${i+1}</div><div class="step-t">${s}</div></div>`; });
+    html+=`</div>`;
+  }
+  if(q.shortcut){
+    html+=`<div class="sc-box"><span class="sc-key">${q.shortcut.key}</span><span class="sc-txt">${q.shortcut.desc}</span></div>`;
+    if(q.shortcut.mac) html+=`<div class="sc-box" style="margin-top:-6px"><span class="sc-key">${q.shortcut.mac}</span><span class="sc-txt">Mac shortcut</span></div>`;
+  }
+  if(q.info) html+=`<div class="info-box">ℹ️ ${q.info}</div>`;
+  if(q.warn) html+=`<div class="warn-box">⚠️ <strong>Important:</strong> ${q.warn}</div>`;
+  q.tips?.forEach(t=>{ html+=`<div class="tip-box"><div class="tit">💡 Tip</div>${t}</div>`; });
+  // Nav
+  const visible=FAQ.filter(x=>!isBeginnerMode||x.lvl!=='adv');
+  const idx=visible.findIndex(x=>x.id===q.id);
+  const prev=idx>0?visible[idx-1]:null;
+  const next=idx<visible.length-1?visible[idx+1]:null;
+  html+=`<div class="ap-nav">
+    <button class="nav-b" ${!prev?'disabled':''} onclick="selectQ('${prev?.id}')">← Previous</button>
+    <button class="nav-b" ${!next?'disabled':''} onclick="selectQ('${next?.id}')">Next →</button>
+  </div>`;
+  ct.innerHTML=html; ct.style.display='flex';
+  requestAnimationFrame(()=>ct.classList.add('show'));
+}
+
+// ════════════════════════════════════════════════════════
+// TOOLBAR INTERACTIONS
+// ════════════════════════════════════════════════════════
+function hClick(key){
+  const qid=BTN_MAP[key]; if(!qid) return;
+  selectQ(qid);
+}
+
+// Participants button: toggle panel open/closed AND show FAQ
+let ppOpen=false;
+function toggleParticipants(){
+  ppOpen=!ppOpen;
+  const pp=document.getElementById('zPP');
+  pp.classList.toggle('show',ppOpen);
+  const btn=document.getElementById('btn-participants');
+  if(ppOpen){
+    // Show a helpful FAQ about using the participants panel
+    _doSelectQ('rename');
+    // Re-highlight the participants button since clearHL() runs inside _doSelectQ
+    btn.classList.add('highlighted');
+  } else {
+    btn.classList.remove('highlighted');
+    clearHL();
+  }
+}
+
+function toggleMore(){
+  moreOpen=!moreOpen;
+  document.getElementById('moreDropdown').classList.toggle('show',moreOpen);
+  if(moreOpen) hl('btn-more');
+  else clearHL();
+}
+function openMoreMenu(){ moreOpen=true; document.getElementById('moreDropdown').classList.add('show'); }
+function closeMoreMenu(){ moreOpen=false; document.getElementById('moreDropdown').classList.remove('show'); }
+
+function openMobileMore(){ mobileMoreOpen=true; document.getElementById('phMoreSheet').classList.add('show'); hl('mbtn-more'); }
+function closeMobileMore(){ mobileMoreOpen=false; document.getElementById('phMoreSheet').classList.remove('show'); }
+
+// Mobile Participants Panel
+let mobilePPOpen=false;
+function toggleMobileParticipants(){
+  mobilePPOpen=!mobilePPOpen;
+  const panel=document.getElementById('phPPPanel');
+  panel.classList.toggle('show',mobilePPOpen);
+  closeMobileMore();
+  if(mobilePPOpen){
+    _doSelectQ('rename'); // show participants-related FAQ
+    document.getElementById('ph-mg-participants').classList.add('highlighted');
+  } else {
+    document.getElementById('ph-mg-participants').classList.remove('highlighted');
+  }
+}
+function closeMobileParticipants(){
+  mobilePPOpen=false;
+  document.getElementById('phPPPanel').classList.remove('show');
+  document.getElementById('ph-mg-participants').classList.remove('highlighted');
+}
+
+// Close more when clicking outside
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#btn-more')&&!e.target.closest('#moreDropdown')) closeMoreMenu();
+});
+
+// ════════════════════════════════════════════════════════
+// UI SWITCH
+// ════════════════════════════════════════════════════════
+function switchUI(mode,btn){
+  curUI=mode;
+  document.querySelectorAll('.ui-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('desktopUI').style.display=mode==='desktop'?'block':'none';
+  document.getElementById('mobileUI').style.display=mode==='mobile'?'flex':'none';
+  clearHL(); closeMoreMenu(); closeMobileMore(); closeMobileParticipants();
+  if(curQ) selectQ(curQ);
+}
+
+// ════════════════════════════════════════════════════════
+// MODE
+// ════════════════════════════════════════════════════════
+function setMode(mode,btn){
+  isBeginnerMode=mode==='beginner';
+  document.querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.body.classList.toggle('beginner',isBeginnerMode);
+}
+
+// ════════════════════════════════════════════════════════
+// SEARCH — word-based matching: every word in query must appear somewhere in the text
+// e.g. "raise hand" finds "How do I raise my hand?" because both "raise" and "hand" appear
+// ════════════════════════════════════════════════════════
+function filterQ(val){
+  const raw=val.toLowerCase().trim();
+  const words=raw.split(/\s+/).filter(Boolean); // split into individual words
+  const allItems=document.querySelectorAll('.q-item');
+
+  if(!words.length){
+    // Restore normal state
+    allItems.forEach(item=>{
+      item.classList.remove('hidden','search-revealed');
+      item.style.display='';
+    });
+    document.querySelectorAll('.cat-section').forEach(sec=>{
+      const catKey=sec.dataset.cat;
+      const hdr=sec.querySelector('.cat-hdr');
+      const list=sec.querySelector('.q-list');
+      const defaultOpen=['start','av','meeting'];
+      if(defaultOpen.includes(catKey)){ hdr.classList.add('open'); list.classList.add('open'); }
+      else{ hdr.classList.remove('open'); list.classList.remove('open'); }
+    });
+    return;
+  }
+
+  // Match: ALL words must appear somewhere in the item text (in any order, not necessarily adjacent)
+  allItems.forEach(item=>{
+    const text=item.textContent.toLowerCase();
+    const matches=words.every(w=>text.includes(w)); // every word found somewhere
+    item.style.display=matches?'':'none';
+    item.classList.toggle('hidden',!matches);
+    if(matches) item.classList.add('search-revealed');
+  });
+  // Open all categories so results are visible
+  document.querySelectorAll('.cat-hdr').forEach(h=>h.classList.add('open'));
+  document.querySelectorAll('.q-list').forEach(l=>l.classList.add('open'));
+}
+
+// ════════════════════════════════════════════════════════
+// TIMER
+// ════════════════════════════════════════════════════════
+let sec=0;
+setInterval(()=>{
+  sec++; const m=String(Math.floor(sec/60)).padStart(2,'0'); const s=String(sec%60).padStart(2,'0');
+  const el=document.getElementById('ztimer'); if(el) el.textContent=m+':'+s;
+},1000);
+
+// ════════════════════════════════════════════════════════
+// KEYBOARD NAV
+// ════════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  const items=[...document.querySelectorAll('.q-item:not(.hidden)')];
+  const idx=items.findIndex(i=>i.dataset.id===curQ);
+  if((e.key==='ArrowDown'||e.key==='ArrowRight')&&idx<items.length-1){items[idx+1].click();e.preventDefault();}
+  if((e.key==='ArrowUp'||e.key==='ArrowLeft')&&idx>0){items[idx-1].click();e.preventDefault();}
+  if(e.key==='Escape'){ closeMoreMenu(); closeMobileMore(); closeMobileParticipants(); }
+});
+
+// ════════════════════════════════════════════════════════
+// PRINT — generates a complete formatted document
+// ════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════
+// MOBILE TAB SWITCHING
+// ════════════════════════════════════════════════════════
+function switchTab(tab){
+  const layout = document.getElementById('mainLayout');
+  layout.dataset.tab = tab;
+  document.querySelectorAll('.mob-tab').forEach(b => b.classList.remove('active'));
+  const map = {q:'mobTabQ', ui:'mobTabUI', ans:'mobTabAns'};
+  document.getElementById(map[tab]).classList.add('active');
+  // Hide answer dot once they open the answer tab
+  if(tab === 'ans') document.getElementById('ansDot').classList.remove('show');
+}
+
+// ════════════════════════════════════════════════════════
+// DANCER + CONFETTI
+// ════════════════════════════════════════════════════════
+const funMessages = [
+  '🕺 You clicked the dancer! You\'re a tech pro!',
+  '💃 Look at you go! Zoom can\'t stop you now!',
+  '🎉 Woohoo! You\'re doing amazing!',
+  '🌟 That\'s it — you\'ve mastered the click!',
+  '🦸 Tech superhero in training!',
+  '🥳 Party time! Questions are fun!',
+  '🎊 You\'re unstoppable! High five! ✋',
+];
+let dancerClickCount = 0;
+function bounceDancer(){
+  const dancer = document.getElementById('theDancer');
+  dancer.style.animation = 'none';
+  const emojis = ['🕺','💃','🤸','🎉','🥳','🦸','😎'];
+  dancer.textContent = emojis[dancerClickCount % emojis.length];
+  void dancer.offsetWidth;
+  dancer.style.animation = 'twerk .15s ease-in-out infinite alternate';
+  setTimeout(()=>{ dancer.style.animation='twerk .45s ease-in-out infinite alternate'; dancer.textContent='🕺'; }, 2000);
+  launchConfetti();
+  const fun = document.getElementById('sbFun');
+  if(fun){ fun.textContent = funMessages[dancerClickCount % funMessages.length]; }
+  dancerClickCount++;
+}
+
+function launchConfetti(){
+  const pieces = ['🎉','⭐','✨','🌟','💜','💙','🎊','🌈','🥳','🦄'];
+  for(let i=0; i<14; i++){
+    setTimeout(()=>{
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.textContent = pieces[Math.floor(Math.random()*pieces.length)];
+      el.style.left = (Math.random()*100)+'vw';
+      el.style.animationDuration = (1.8+Math.random()*1.8)+'s';
+      el.style.fontSize = (14+Math.random()*16)+'px';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(), 4000);
+    }, i*80);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// OVERRIDE selectQ to switch mobile tab and show dot
+// ════════════════════════════════════════════════════════
+const _origSelectQ = selectQ;
+window.selectQ = function(id){
+  _origSelectQ(id);
+  // On mobile: show answer dot and optionally switch to answer tab
+  if(window.innerWidth <= 900){
+    document.getElementById('ansDot').classList.add('show');
+    // Auto-switch to answer tab after a moment
+    setTimeout(()=>switchTab('ans'), 180);
+  }
+};
+
+function printGuide(){
+  const win = window.open('','_blank');
+
+  // Group FAQs by category
+  const grouped = {};
+  FAQ.forEach(q=>{ (grouped[q.cat] = grouped[q.cat]||[]).push(q); });
+
+  let body = '';
+
+  Object.entries(CATS).forEach(([catKey, catMeta]) => {
+    const qs = grouped[catKey] || [];
+    if(!qs.length) return;
+
+    body += `<div class="cat-block">
+      <div class="cat-header">
+        <span class="cat-icon-print">${catMeta.icon}</span>
+        <span class="cat-name-print">${catMeta.name}</span>
+      </div>`;
+
+    qs.forEach(q => {
+      const hostTag = q.lvl === 'adv' ? '<span class="host-tag">HOST</span>' : '';
+
+      // Steps
+      let stepsHtml = '';
+      if(q.steps && q.steps.length){
+        stepsHtml = '<div class="steps-block"><div class="steps-title">📋 Step by Step</div>';
+        q.steps.forEach((s, i) => {
+          stepsHtml += `<div class="step-row"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`;
+        });
+        stepsHtml += '</div>';
+      }
+
+      // Shortcut
+      let shortcutHtml = '';
+      if(q.shortcut){
+        shortcutHtml = `<div class="shortcut-box">⌨️ <strong>Keyboard shortcut:</strong> <span class="key">${q.shortcut.key}</span> — ${q.shortcut.desc}`;
+        if(q.shortcut.mac) shortcutHtml += ` &nbsp;|&nbsp; <span class="key">${q.shortcut.mac}</span> (Mac)`;
+        shortcutHtml += '</div>';
+      }
+
+      // Info box
+      let infoHtml = q.info ? `<div class="info-box">ℹ️ ${q.info}</div>` : '';
+
+      // Warning
+      let warnHtml = q.warn ? `<div class="warn-box">⚠️ <strong>Important:</strong> ${q.warn}</div>` : '';
+
+      // Tips
+      let tipsHtml = '';
+      if(q.tips && q.tips.length){
+        q.tips.forEach(t => { tipsHtml += `<div class="tip-box">💡 <strong>Tip:</strong> ${t}</div>`; });
+      }
+
+      body += `<div class="q-block">
+        <div class="q-title">${q.q} ${hostTag}</div>
+        <div class="q-intro">${q.text}</div>
+        ${stepsHtml}
+        ${shortcutHtml}
+        ${infoHtml}
+        ${warnHtml}
+        ${tipsHtml}
+      </div>`;
+    });
+
+    body += '</div>'; // /cat-block
+  });
+
+  win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Zoom Help Guide — AA Meeting Training</title>
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0 }
+  body{ font-family: Georgia, 'Times New Roman', serif; font-size:11pt; color:#111; background:#fff; padding:0 }
+
+  /* Cover page */
+  .cover{ text-align:center; padding:80px 40px; border-bottom:3px solid #2D8CFF; margin-bottom:30px }
+  .cover-logo{ font-size:52px; margin-bottom:12px }
+  .cover-title{ font-size:28pt; font-weight:bold; color:#1565C0; letter-spacing:-1px; margin-bottom:6px }
+  .cover-sub{ font-size:13pt; color:#555; margin-bottom:20px }
+  .cover-meta{ font-size:10pt; color:#888; border-top:1px solid #ddd; padding-top:14px; margin-top:20px }
+  .cover-toc{ text-align:left; max-width:420px; margin:28px auto 0; background:#F0F6FF; border-radius:8px; padding:16px 20px }
+  .cover-toc-title{ font-size:11pt; font-weight:bold; color:#1565C0; margin-bottom:10px; text-transform:uppercase; letter-spacing:.5px }
+  .cover-toc li{ font-size:10.5pt; color:#374151; margin-bottom:5px; list-style:none; padding-left:6px }
+  .cover-toc li span{ color:#888; margin-right:6px }
+
+  /* Category blocks */
+  .cat-block{ margin-bottom:28px; page-break-inside:avoid }
+  .cat-header{ display:flex; align-items:center; gap:8px; background:#1565C0; color:#fff;
+    padding:8px 14px; border-radius:6px 6px 0 0; margin-bottom:0 }
+  .cat-icon-print{ font-size:16pt }
+  .cat-name-print{ font-size:14pt; font-weight:bold; letter-spacing:.3px }
+
+  /* Question blocks */
+  .q-block{ border:1px solid #E5E7EB; border-top:none; padding:14px 16px 12px;
+    page-break-inside:avoid; background:#fff }
+  .q-block + .q-block{ border-top:1px solid #E5E7EB }
+  .cat-block > .q-block:last-child{ border-radius:0 0 6px 6px }
+  .q-title{ font-size:12pt; font-weight:bold; color:#1a1a2e; margin-bottom:5px; line-height:1.3 }
+  .host-tag{ display:inline-block; font-size:7pt; font-weight:bold; background:#FEF3C7;
+    color:#92400E; padding:1px 5px; border-radius:3px; vertical-align:middle; margin-left:5px; font-family:sans-serif }
+  .q-intro{ font-size:10.5pt; color:#374151; margin-bottom:9px; line-height:1.6 }
+
+  /* Steps */
+  .steps-block{ margin-bottom:9px }
+  .steps-title{ font-size:8.5pt; font-weight:bold; text-transform:uppercase; letter-spacing:.5px; color:#6b7280; margin-bottom:6px; font-family:sans-serif }
+  .step-row{ display:flex; gap:9px; align-items:flex-start; margin-bottom:5px }
+  .step-num{ width:20px; height:20px; background:#2D8CFF; color:#fff; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:9pt; font-weight:bold;
+    flex-shrink:0; font-family:sans-serif; margin-top:1px }
+  .step-text{ font-size:10.5pt; color:#374151; line-height:1.5; flex:1 }
+
+  /* Boxes */
+  .shortcut-box{ background:#EFF6FF; border-left:3px solid #2D8CFF; padding:6px 10px;
+    margin-bottom:7px; font-size:10pt; color:#1e40af; border-radius:0 4px 4px 0; font-family:sans-serif }
+  .key{ display:inline-block; background:#fff; border:1.5px solid #CBD5E1; border-bottom:2.5px solid #94A3B8;
+    border-radius:4px; padding:1px 7px; font-size:9.5pt; font-weight:bold; color:#374151; font-family:monospace }
+  .info-box{ background:#EFF6FF; border-left:3px solid #2D8CFF; padding:6px 10px;
+    margin-bottom:7px; font-size:10pt; color:#1e40af; border-radius:0 4px 4px 0 }
+  .warn-box{ background:#FEF2F2; border-left:3px solid #EF4444; padding:6px 10px;
+    margin-bottom:7px; font-size:10pt; color:#7F1D1D; border-radius:0 4px 4px 0 }
+  .tip-box{ background:#FFF8E1; border-left:3px solid #F59E0B; padding:6px 10px;
+    margin-bottom:7px; font-size:10pt; color:#78350F; border-radius:0 4px 4px 0 }
+
+  /* Page breaks */
+  .cat-block{ page-break-before:auto }
+  .cat-block:first-child{ page-break-before:avoid }
+
+  /* Page header on every page */
+  @page{ margin:18mm 15mm 15mm; }
+
+  /* Print-only footer note */
+  .print-footer{ text-align:center; margin-top:32px; padding-top:14px;
+    border-top:1px solid #ddd; font-size:9pt; color:#aaa; font-family:sans-serif }
+
+  @media screen{
+    body{ max-width:760px; margin:0 auto; padding:24px }
+    .cover{ border-radius:10px; border:2px solid #2D8CFF }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-logo">📹</div>
+  <div class="cover-title">Zoom Help Guide</div>
+  <div class="cover-sub">AA Meeting Training — Complete Reference</div>
+  <div class="cover-meta">Printed ${new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
+  <div class="cover-toc">
+    <div class="cover-toc-title">Contents</div>
+    <ul>${Object.entries(CATS).map(([k,m])=>`<li><span>${m.icon}</span>${m.name} <em style="color:#aaa;font-size:9pt">(${(grouped[k]||[]).length} topics)</em></li>`).join('')}</ul>
+  </div>
+</div>
+
+${body}
+
+<div class="print-footer">Zoom Help Guide · AA Meeting Training Tool · Printed ${new Date().toLocaleDateString()}</div>
+
+<script>window.onload=()=>{ window.print(); }<\/script>
+</body>
+</html>`);
+
+  win.document.close();
+}
+
+buildFAQ();
+</script>
+</body>
+</html>
